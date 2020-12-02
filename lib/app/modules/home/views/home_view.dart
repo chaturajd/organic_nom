@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; 
+import 'package:get/get.dart';
+import 'package:organicnom/app/controllers/controllers/auth_controller.dart'; 
 import 'package:organicnom/app/modules/home/controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -10,11 +11,18 @@ class HomeView extends GetView<HomeController> {
         title: Text('HomeView'),
         centerTitle: true,
       ),
-      body: Center(
-        child: Text(
-          'HomeView is working', 
-          style: TextStyle(fontSize:20),
-        ),
+      body: Column(
+        children: [
+          RaisedButton(onPressed: (){
+            Get.find<AuthController>().signOut();
+          },child: Text("Sign Out"),),
+          Center(
+            child: Text(
+              'HomeView is working', 
+              style: TextStyle(fontSize:20),
+            ),
+          ),
+        ],
       ),
     );
   }

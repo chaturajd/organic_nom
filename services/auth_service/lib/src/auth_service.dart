@@ -27,6 +27,8 @@ class AuthService {
         idToken: googleAuth.idToken,
       );
       await _firebaseAuth.signInWithCredential(credential);
+
+      print(_firebaseAuth.currentUser.email);
     } on Exception {
       throw SignInWithGoogleFailure();
     }
@@ -44,10 +46,15 @@ class AuthService {
   }
 
   Stream<User> get user {
+    _firebaseAuth.authStateChanges().listen((event) { 
+      print("AUTH SERVICE : $event.email");
+    });
     return _firebaseAuth.authStateChanges().map((firebaseUser) {
-      return firebaseUser == null ? User.empty : firebaseUser.toUser;
+      return firebaseUser.toUser;
     });
   }
+
+
 }
 
 extension on firebase_auth.User {
