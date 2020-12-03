@@ -28,7 +28,8 @@ class ListItemView extends GetView {
       child: InkWell(
         // onTap: isCompleted || isActive ? () => onClick() : null,
         onTap: () {
-          Get.toNamed('/lessons/lesson',preventDuplicates: true,arguments: index);
+          Get.toNamed('/lessons/lesson',
+              preventDuplicates: true, arguments: index);
         },
         child: Container(
           child: Column(
@@ -59,16 +60,19 @@ class ListItemView extends GetView {
                                   fontSize: 19,
                                   fontWeight: FontWeight.w900,
                                   letterSpacing: 1.2,
-                                  shadows: [
-                                    BoxShadow(
-                                        offset: Offset(1, 1),
-                                        blurRadius: 20,
-                                        color: Colors.black38)
-                                  ],
+                                  shadows: isCompleted || isActive
+                                      ? [
+                                          BoxShadow(
+                                              offset: Offset(1, 1),
+                                              blurRadius: 20,
+                                              color: Colors.black38)
+                                        ]
+                                      : null,
                                 ),
                               ),
                               Text(
                                 description,
+                                overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.overpass(
                                     fontWeight: FontWeight.w800,
                                     fontSize: 12,

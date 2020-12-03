@@ -20,6 +20,7 @@ void main() async {
       initialBinding: AuthBinding(),
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
+      defaultTransition: Transition.topLevel,
     ),
   );
 }

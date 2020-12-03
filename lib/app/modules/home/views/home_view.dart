@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:organicnom/app/controllers/controllers/auth_controller.dart';
 import 'package:organicnom/app/modules/home/controllers/home_controller.dart';
 import 'package:organicnom/app/routes/app_pages.dart';
+import 'package:organicnom/app/views/views/video_container_view.dart';
 
 class HomeView extends GetView<HomeController> {
   void signOut() {
@@ -76,26 +77,8 @@ class HomeView extends GetView<HomeController> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                width: double.infinity,
-                child: Icon(
-                  FontAwesomeIcons.youtube,
-                  size: 64,
-                  color: Colors.red[200],
-                ),
-                height: 300,
-                decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                          offset: Offset(0, 4),
-                          blurRadius: 24,
-                          spreadRadius: 0,
-                          color: Colors.black12),
-                    ],
-                    borderRadius: BorderRadius.circular(16),
-                    color: Colors.white),
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: VideoContainerView(),
             ),
             Expanded(
               child: Container(

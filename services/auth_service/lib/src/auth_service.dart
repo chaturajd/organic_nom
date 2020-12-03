@@ -1,12 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:google_sign_in/google_sign_in.dart';
 import './models/models.dart';
+import 'google_sign_in_status.dart';
 
 class SignInFailure implements Exception {}
 
 class SignInWithGoogleFailure implements Exception {}
 
 class SignOutFailure implements Exception {}
+
 
 class AuthService {
   AuthService({
@@ -17,6 +19,28 @@ class AuthService {
 
   final firebase_auth.FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
+
+  // Stream<GoogleSignInStatus> signInWithGoogle() async* {
+  //   try {
+  //     yield GoogleSignInStatus.Initializing;
+  //     final googleUser = await _googleSignIn.signIn();
+  //     final googleAuth = await googleUser.authentication;
+  //     final credential = firebase_auth.GoogleAuthProvider.credential(
+  //       accessToken: googleAuth.accessToken,
+  //       idToken: googleAuth.idToken,
+  //     );
+
+  //     yield GoogleSignInStatus.Waiting;
+
+  //     await _firebaseAuth.signInWithCredential(credential);
+
+  //     print(_firebaseAuth.currentUser.email);
+
+  //     yield GoogleSignInStatus.SignInSucces;
+  //   } on Exception {
+  //     throw SignInWithGoogleFailure();
+  //   }
+  // }
 
   Future<void> signInWithGoogle() async {
     try {
@@ -46,15 +70,13 @@ class AuthService {
   }
 
   Stream<User> get user {
-    _firebaseAuth.authStateChanges().listen((event) { 
+    _firebaseAuth.authStateChanges().listen((event) {
       print("AUTH SERVICE : $event.email");
     });
     return _firebaseAuth.authStateChanges().map((firebaseUser) {
-      return firebaseUser.toUser;
+      return _firebaseAuth.currentUser == null ? null : firebaseUser.toUser;
     });
   }
-
-
 }
 
 extension on firebase_auth.User {

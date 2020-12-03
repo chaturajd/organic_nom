@@ -5,29 +5,19 @@ import 'package:auth_service/auth_service.dart';
 class AuthController extends GetxController {
   final AuthService _authService = AuthService();
 
-  // Rx<User> user = User.empty.obs;
-
-  // var user = Rx<User>();
-
   Rx<User> user = Rx<User>();
+  // Rx<GoogleSignInStatus> signInStatus = GoogleSignInStatus.Initializing.obs;
 
   @override
   void onInit() {
     user.bindStream(_authService.user);
+    // signInStatus.bindStream(_authService.signInWithGoogle());
     super.onInit();
   }
-  
-
-  // @override
-  // void onReady() {}
-
-  // @override
-  // void onClose() {}
-
 
   Future<void> signInWithGoogle() async {
     try {
-      await _authService.signInWithGoogle();
+      _authService.signInWithGoogle();
     } on Exception {
       print("Sign in with google failed");
     }
@@ -36,7 +26,8 @@ class AuthController extends GetxController {
   Future<void> signOut() async {
     try {
       await _authService.signOut();
-      Get.snackbar("Sign Out", "",snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar("Sign Out", "", snackPosition: SnackPosition.BOTTOM);
+      // user = null;
     } on Exception {
       print("Sign out failed");
     }
