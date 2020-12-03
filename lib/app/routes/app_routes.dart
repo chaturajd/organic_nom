@@ -7,4 +7,8 @@ abstract class Routes{
   static const SIGNIN = '/signin';
   static const ROOT = '/root';
 
+  static const LESSONS = '/lessons';
+  static const LESSON = '/lessons/lesson';
+  
+  static const EXERCISES = '/exercises';
 }
