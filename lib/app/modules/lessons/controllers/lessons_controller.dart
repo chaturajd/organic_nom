@@ -1,70 +1,118 @@
 import 'package:get/get.dart';
-import 'package:organicnom/app/models/models.dart';
+import 'package:data_service/data_service.dart';
+import 'package:organicnom/app/controllers/controllers/auth_controller.dart';
+import 'package:organicnom/app/modules/lessons/controllers/lesson_controller.dart';
+import 'package:organicnom/app/modules/lessons/views/lesson_view.dart';
+import 'package:payment_service/payment_service.dart';
 
 class LessonsController extends GetxController {
   final count = 0.obs;
 
-  RxList<Lesson> lessons = [
-    Lesson(
-        title: "Lesson 1 Title",
-        isCompleted: true,
-        description:  "Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero sunt officia nam quam magnam dolor mollitia, natus veritatis velit recusandae quis qui vel libero voluptates, quidem delectus? Obcaecati eligendi repellat incidunt illo blanditiis repudiandae libero corporis, amet commodi rerum quas molestias quod quisquam neque aut! Quibusdam recusandae molestias eos delectus asperiores fugit, aliquam repellat possimus provident!"),
-    Lesson(
-        title: "Lesson 2 Title",
-        isCompleted: true,
-        description: "Lesson 2 description..."),
-    Lesson(
-        title: "Lesson 3 Title",
-        isCompleted: true,
-        description: "Lesson 3 description..."),
-    Lesson(
-        title: "Lesson 4 Title",
-        isCompleted: true,
-        description: "Lesson 4 description..."),
-    Lesson(
-        title: "Lesson 5 Title",
-        isCompleted: true,
-        description: "Lesson 5 description..."),
-    Lesson(
-        title: "Lesson 6 Title",
-        isCompleted: true,
-        description: "Lesson 6 description..."),
-    Lesson(
-        title: "Lesson 7 Title",
-        isCompleted: true,
-        description: "Lesson 7 description..."),
-    Lesson(
-      title: "Lesson 8 Title",
-      description: "Lesson 8 description...",
-    ),
-    Lesson(
-      title: "Lesson 9 Title",
-      description: "Lesson 9 description...",
-    ),
-    Lesson(
-      title: "Lesson 10 Title",
-      description: "Lesson 10 description...",
-    ),
-    Lesson(
-      title: "Lesson 11 Title",
-      description: "Lesson 11 description...",
-    ),
-    Lesson(
-      title: "Lesson 12 Title",
-      description: "Lesson 12 description...",
-    ),
-  ].obs;
+  RxList<Lesson> lessons;
 
-  RxInt active = 7.obs;
+  RxInt active;
+  int current = 2;
 
   @override
-  void onInit() {}
+  void onInit() {
+    final ds = DataService();
+    active = ds.getActiveLessonId().obs;
+    lessons = ds.getAllLessons().obs;
+    print("ACTIVE : ${active.value}");
+    super.onInit();
+  }
+
+  getLesson(id) {
+    print("Getting Lesson $id");
+    if (lessons.length < id) {
+      Get.snackbar("Out of bound", "message");
+      return NoSuchLesson();
+    }
+
+    return lessons[id];
+  }
+
+  void refreshLessons() {
+    //TODO
+    print("TODO : Refresh lesson list");
+  }
+
+  void next() async {
+    current++;
+    // var lesson = getLesson(current);
+
+    Get.back();
+    final Lesson next = getLesson(current);
+    if (!next.isLocked) {
+      await Get.to(LessonView(LessonController(next)));
+    } else if (next.isLocked) {
+      final purchaseChecker = PayHerePayment.purchaseChecker(
+          Get.find<AuthController>().user.value.id);
+
+      final bool hasPurchased = await purchaseChecker.checkPurchaseStatus();
+
+      final bool isPreviousCompleted = true;
+
+      if (hasPurchased) {
+        if (isPreviousCompleted) {
+          var updatedLessons = lessons.map((lesson) {
+            if (lesson.id == current - 1) {
+              return Lesson(
+                  id: lesson.id,
+                  description: lesson.description,
+                  isCompleted: true,
+                  isLocked: false,
+                  title: lesson.title,
+                  videoUrl: lesson.videoUrl);
+            } else if (lesson.id == current) {
+              active = lesson.id.obs;
+              return Lesson(
+                  id: lesson.id,
+                  description: lesson.description,
+                  isCompleted: false,
+                  isLocked: false,
+                  title: lesson.title,
+                  videoUrl: lesson.videoUrl);
+            }
+            return lesson;
+          }).toList();
+
+          lessons.assignAll(updatedLessons);
+          DataService()..updateActiveExercisePointer(current);
+
+          print("Lesson list Updated");
+
+          await Get.to(LessonView(LessonController(lessons[current])));
+        } else {
+          print("You should complete previous exercises");
+          await Get.to(LessonView(LessonController(lessons[current])),
+              arguments: LockedStatus.Incompleted);
+        }
+      } else {
+        print("Buy lessons pack");
+        await Get.to(LessonView(LessonController(lessons[current])),
+            arguments: LockedStatus.NotPaid);
+      }
+    }
+
+    // // await Get.to(LessonView(), arguments: lesson);
+
+    // // await Get.offNamed('/lessons/lesson',arguments: getLesson(),);
+    // await Get.offAndToNamed(
+    //   '/lessons/lesson',
+    //   arguments: lesson,
+    // );
+  }
+
+  void gotoLesson(index) async {
+    current = index;
+    print("Current Index set : $current");
+    await Get.to(LessonView(LessonController(getLesson(index))));
+  }
 
   @override
   void onReady() {}
 
   @override
   void onClose() {}
-
-  void increment() => count.value++;
 }

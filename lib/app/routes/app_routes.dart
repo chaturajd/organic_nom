@@ -11,4 +11,10 @@ abstract class Routes{
   static const LESSON = '/lessons/lesson';
   
   static const EXERCISES = '/exercises';
+  static const EXERCISE = '/exercises/exercise';
+
+  static const EXPLAINER = '/explainer';
+  // static const EXERCISE = '/exercise';
+  static const LOCKED_EXERCISE = '/locked-exercise';
+  static const LOCKED_ITEM = '/locked-item';
 }

@@ -13,7 +13,7 @@ class PayHerePayment implements Payment {
       "sandbox": true,
       "merchant_id": "1216113",
       "merchant_secret": "4eVLjfKaquK8gdw1hsdvcJ48Xv2rugSg98bStsAdBtFC",
-      // "notify_url": "http://sample.com/notify",
+      "notify_url": "http://sample.com/notify",
       "order_id": "organic_nom1",
       "items": "Hello from Flutter!",
       "amount": "50.00",
@@ -32,6 +32,8 @@ class PayHerePayment implements Payment {
       "custom_2": ""
     };
   }
+
+  PayHerePayment.purchaseChecker(this.userId,{this.email="",this.name=""});
 
   final userId;
   final name;
@@ -56,5 +58,9 @@ class PayHerePayment implements Payment {
       },
     );
     return PaymentStatus.Unknown;
+  }
+
+  Future<bool> checkPurchaseStatus() {
+    return Future.delayed(Duration(microseconds: 20), () => true);
   }
 }

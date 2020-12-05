@@ -4,8 +4,9 @@ import 'package:organicnom/app/modules/lessons/controllers/lesson_controller.dar
 class LessonBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<LessonController>(
-      () => LessonController(),
-    );
+    // Get.lazyPut<LessonController>(
+    //   () => LessonController(),
+    // );
+    
   }
 }

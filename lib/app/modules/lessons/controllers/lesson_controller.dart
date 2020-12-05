@@ -1,8 +1,11 @@
 import 'package:get/get.dart';
-import 'package:organicnom/app/models/models.dart';
+import 'package:data_service/data_service.dart';
+import 'package:organicnom/app/modules/lessons/controllers/lessons_controller.dart';
 
 class LessonController extends GetxController {
-  Lesson lesson;
+  LessonController(this.lesson);
+
+  final Lesson lesson;
 
   // int get current => current;
   // set current(int value) => current = value;
@@ -23,11 +26,13 @@ class LessonController extends GetxController {
   void onClose() {}
 
   void next() async {
-    current++;
-    Get.snackbar("title", "message");
-    await Get.offAndToNamed(
-      '/lessons/lesson',
-      arguments: current,
-    );
+    // current++;
+    // Get.snackbar("title", "message");
+    // await Get.offAndToNamed(
+    //   '/lessons/lesson',
+    //   arguments: current,
+    // );
+  //  await Get.find<LessonsController>().next(current);
+  Get.find<LessonsController>().next();
   }
 }

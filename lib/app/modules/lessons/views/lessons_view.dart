@@ -9,8 +9,6 @@ class LessonsView extends GetView<LessonsController> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          // title: Text('LessonsView'),
-          // centerTitle: true,
           leading: BackButton(
             color: Colors.black,
           ),
@@ -25,22 +23,36 @@ class LessonsView extends GetView<LessonsController> {
               PageTitleView('Lessons'),
               Expanded(
                 child: Obx(
-                  () => ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    itemCount: controller.lessons.length,
-                    itemBuilder: (context, index) {
-                      return Obx(
-                        () => ListItemView(
-                          index: index,
-                          description: controller.lessons[index].description,
-                          title: controller.lessons[index].title,
-                          isCompleted: controller.lessons[index].isCompleted,
-                          isActive: index == controller.active.value ?? true,
-                          // onClick: ,
+                  () => controller.lessons == null ||
+                          controller.lessons.length < 1
+                      ? Center(
+                          child: Text("Refresh ... "),
+                        )
+                      : ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                          itemCount: controller.lessons.length,
+                          itemBuilder: (context, index) {
+                            return Obx(
+                              () => InkWell(
+                                onTap:controller.lessons[index].isLocked ? null : () {
+                                  controller.gotoLesson(index);
+                                },
+                                child: ListItemView(
+                                  index: index,
+                                  description:
+                                      controller.lessons[index].description,
+                                  title: controller.lessons[index].title,
+                                  isCompleted:
+                                      controller.lessons[index].isCompleted,
+                                  isActive:
+                                      index == controller.active.value ?? true,
+                                  isLocked: controller.lessons[index].isLocked,
+                                  // onClick: ,
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
                 ),
               )
             ],

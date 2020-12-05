@@ -1,0 +1,1 @@
+enum LockedStatus{NotPaid,Incompleted}
