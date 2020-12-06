@@ -101,7 +101,7 @@ class NetworkDataService implements IDataService {
             3: getRandomString(_rnd.nextInt(15) + 1),
             4: getRandomString(_rnd.nextInt(15) + 1),
           },
-          correctAnswer: _rnd.nextInt(3 + 1),
+          correctAnswer: _rnd.nextInt(3)+1,
           isCompleted: index <= active ? true : false,
           isLocked: index <= active ? false : true,
           id: index);

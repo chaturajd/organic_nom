@@ -86,7 +86,7 @@ class HomeView extends GetView<HomeController> {
                   child: Padding(
                     padding: const EdgeInsets.all(24.0),
                     child: Text(
-                      "by AmilaGuru",
+                      "by AmilaGuru(pvt) Ltd.",
                       style: GoogleFonts.overpass(
                           fontWeight: FontWeight.w900, fontSize: 24),
                     ),

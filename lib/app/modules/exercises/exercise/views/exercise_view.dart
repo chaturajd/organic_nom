@@ -88,7 +88,7 @@ class ExerciseView extends GetView<ExerciseController> {
               controller.next();
             },
           ),
-          body: Text("Explainer View"),
+          body: Center(child: Text("Explainer View")),
         );
       }
     });
