@@ -11,7 +11,9 @@ import 'package:organicnom/app/views/views/video_container_view.dart';
 import 'package:payment_service/payment_service.dart';
 
 class LessonView extends GetView<LessonController> {
-  LessonView(this.controller);
+  LessonView(this.controller){
+    print("Lesson ${controller.lesson.isLocked}");
+  }
   final controller;
 
   var appBar = AppBar(

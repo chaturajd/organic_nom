@@ -8,6 +8,8 @@ import 'package:payment_service/payment_service.dart';
 class ExercisesController extends GetxController {
   RxList<Exercise> exercises;
 
+  RxBool loaded = false.obs;
+
   ///Active exercise to be completed
   RxInt active;
 
@@ -75,10 +77,14 @@ class ExercisesController extends GetxController {
     } else if (next.isLocked) {
       print("Exercise is locked : trying to Unlock");
       //If payment service allows,
-      final purchaseChecker = PayHerePayment.purchaseChecker(
-          Get.find<AuthController>().user.value.id);
+      // final purchaseChecker = PayHerePayment.purchaseChecker(
+      //     Get.find<AuthController>().user.value.id);
 
-      final bool hasPurchased = await purchaseChecker.checkPurchaseStatus();
+      final ds = DataService();
+
+      final bool hasPurchased =
+          await ds.getPurchaseStatus(Get.find<AuthController>().user.value.id);
+          
       final bool isPreviousCompleted = true;
 
       if (hasPurchased) {
@@ -136,19 +142,25 @@ class ExercisesController extends GetxController {
   }
 
   @override
-  void onInit() {
-    refreshExercisesList();
+  void onInit() async {
+    await refreshExercisesList().then(
+      (_) => loaded.value = true,
+    );
 
     super.onInit();
   }
 
-  void refreshExercisesList() {
+  Future<void> refreshExercisesList() async {
     final ds = DataService();
-    active = ds.getActiveExerciseId().obs;
+    int loadedAcitve = await ds.getActiveExerciseId();
+    active = loadedAcitve.obs;
+
+    final loadedExercises = await ds.getAllExercises();
+
     if (exercises == null) {
-      exercises = ds.getAllExercises().obs;
+      exercises = loadedExercises.obs;
     } else {
-      exercises.assignAll(ds.getAllExercises().obs);
+      exercises.assignAll(loadedExercises.obs);
     }
     print("refreshed exercises list : ${exercises.length}");
   }

@@ -1,5 +1,8 @@
 import 'dart:math';
 
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
+
 import './models/models.dart';
 
 abstract class IDataService {
@@ -10,51 +13,54 @@ abstract class IDataService {
 class DataService {
   final _netDataService = NetworkDataService();
 
-  static final DataService _dataService = DataService._internal();
+  var varBox;
 
-  DataService._internal() {
-    _initStorage();
+  Future<List<Lesson>> getAllLessons() async {
+    return _netDataService.getAllLessons(active: await getActiveLessonId());
   }
 
-  factory DataService() {
-    return _dataService;
+  Future<List<Exercise>> getAllExercises() async {
+    return _netDataService.getAllExercise(active: await getActiveExerciseId());
   }
 
-  Future<void> _initStorage() async {
-    // await GetStorage.init();
+  static init() async {
+    final docDirectory = await getApplicationDocumentsDirectory();
+    Hive.init(docDirectory.path);
   }
-
-  List<Lesson> getAllLessons() {
-    return _netDataService.getAllLessons(active: getActiveLessonId());
-  }
-
-  List<Exercise> getAllExercises() {
-    return _netDataService.getAllExercise(active: getActiveExerciseId());
-  }
-
   // void unlockNextExercise() {
   //   activeExerciseId++;
   //   print("Unlocked pointer moved to $activeExerciseId");
   // }
 
-  void updateActiveLessonPointer(int pointer) {
-    // final box = GetStorage();
-    // box.write("activeLessonPointer", pointer);
+  Future<void> updateActiveLessonPointer(int pointer) async {
+    final box = await Hive.openBox("var");
+    box.put("activeLessonPointer", pointer);
   }
 
-  void updateActiveExercisePointer(int pointer) {
-    // final box = GetStorage();
-    // box.write("activeExercisePointer", pointer);
+  Future<void> updateActiveExercisePointer(int pointer) async {
+    final box = await Hive.openBox("var");
+    box.put("activeExercisePointer", pointer);
   }
 
-  int getActiveExerciseId() {
-    // return GetStorage().read("activeExercisePointer");
-    return 5;
+  Future<int> getActiveExerciseId() async {
+    final box = await Hive.openBox("var");
+    return box.get("activeExercisePointer", defaultValue: 0);
   }
 
-  int getActiveLessonId() {
-    // return GetStorage().read("activeLessonPointer");
-    return 12;
+  Future<int> getActiveLessonId() async {
+    final box = await Hive.openBox("var");
+    return box.get("activeLessonPointer", defaultValue: 0);
+  }
+
+  ///returns true if user has purchased, false otherwise
+  Future<bool> getPurchaseStatus(String id) async {
+    final box = await Hive.openBox("var");
+    return box.get("purchased", defaultValue: false);
+  }
+
+  Future<void> setPurchaseStatus(String id) async {
+    final box = await Hive.openBox("var");
+    box.put("purchased", true);
   }
 }
 

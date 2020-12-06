@@ -26,18 +26,19 @@ class ExercisesView extends GetView<ExercisesController> {
               child: Obx(
                 () {
                   print("Building exercises list");
-                  return controller.exercises == null ||
-                          controller.exercises.length < 1
+                  return !controller.loaded.value
                       ? Center(
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.refresh,
-                              size: 36,
-                            ),
-                            onPressed: () {
-                              controller.refreshExercisesList();
-                            },
-                          ),
+                          child: 
+                          Text(controller.loaded.toString())
+                          // IconButton(
+                          //   icon: Icon(
+                          //     Icons.refresh,
+                          //     size: 36,
+                          //   ),
+                          //   onPressed: () {
+                          //     controller.refreshExercisesList();
+                          //   },
+                          // ),
                         )
                       : Obx(
                           () => ListView.builder(

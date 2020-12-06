@@ -23,35 +23,40 @@ class LessonsView extends GetView<LessonsController> {
               PageTitleView('Lessons'),
               Expanded(
                 child: Obx(
-                  () => controller.lessons == null ||
-                          controller.lessons.length < 1
+                  () => !controller.loaded.value
                       ? Center(
-                          child: Text("Refresh ... "),
+                          child: Text(controller.loaded.toString()),
                         )
-                      : ListView.builder(
-                          physics: BouncingScrollPhysics(),
-                          itemCount: controller.lessons.length,
-                          itemBuilder: (context, index) {
-                            return Obx(
-                              () => InkWell(
-                                onTap:controller.lessons[index].isLocked ? null : () {
-                                  controller.gotoLesson(index);
-                                },
-                                child: ListItemView(
-                                  index: index,
-                                  description:
-                                      controller.lessons[index].description,
-                                  title: controller.lessons[index].title,
-                                  isCompleted:
-                                      controller.lessons[index].isCompleted,
-                                  isActive:
-                                      index == controller.active.value ?? true,
-                                  isLocked: controller.lessons[index].isLocked,
-                                  // onClick: ,
+                      : Obx(
+                          () => ListView.builder(
+                            physics: BouncingScrollPhysics(),
+                            itemCount: controller.lessons.length,
+                            itemBuilder: (context, index) {
+                              return Obx(
+                                () => InkWell(
+                                  onTap: controller.lessons[index].isLocked
+                                      ? null
+                                      : () {
+                                          controller.gotoLesson(index);
+                                        },
+                                  child: ListItemView(
+                                    index: index,
+                                    description:
+                                        controller.lessons[index].description,
+                                    title: controller.lessons[index].title,
+                                    isCompleted:
+                                        controller.lessons[index].isCompleted,
+                                    isActive:
+                                        index == controller.active.value ??
+                                            true,
+                                    isLocked:
+                                        controller.lessons[index].isLocked,
+                                    // onClick: ,
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
                 ),
               )

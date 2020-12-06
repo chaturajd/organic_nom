@@ -46,18 +46,18 @@ class PayHerePayment implements Payment {
       paymentObject,
       (paymentId) {
         print("One Time Payment Success. Payment Id: $paymentId");
-        return PaymentStatus.Completed;
+        return Future.value(PaymentStatus.Completed);
       },
       (error) {
         print("One Time Payment Failed. Error: $error");
-        return PaymentStatus.Failed;
+        return Future.value(PaymentStatus.Failed);
       },
       () {
         print("One Time Payment Dismissed");
-        return PaymentStatus.Canceled;
+        return Future.value(PaymentStatus.Canceled);
       },
     );
-    return PaymentStatus.Unknown;
+    return Future.value(PaymentStatus.Unknown);
   }
 
   Future<bool> checkPurchaseStatus() {

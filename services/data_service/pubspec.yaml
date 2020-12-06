@@ -9,7 +9,10 @@ dependencies:
   flutter:
     sdk: flutter
   http:
-      
+  hive: ^1.4.4+1
+  hive_flutter:
+  path_provider:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

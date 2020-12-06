@@ -10,15 +10,17 @@ class LessonsController extends GetxController {
 
   RxList<Lesson> lessons;
 
+  RxBool loaded = false.obs;
+
   RxInt active;
   int current = 2;
 
   @override
-  void onInit() {
-    final ds = DataService();
-    active = ds.getActiveLessonId().obs;
-    lessons = ds.getAllLessons().obs;
-    print("ACTIVE : ${active.value}");
+  void onInit() async {
+    await refreshLessonsList().then(
+      (_) => loaded.value = true,
+    );
+
     super.onInit();
   }
 
@@ -32,9 +34,18 @@ class LessonsController extends GetxController {
     return lessons[id];
   }
 
-  void refreshLessons() {
-    //TODO
-    print("TODO : Refresh lesson list");
+  Future<void> refreshLessonsList() async {
+    final ds = DataService();
+    int loadedActive = await ds.getActiveLessonId();
+    active = loadedActive.obs;
+
+    final loadedLessons = await ds.getAllLessons();
+
+    if (lessons == null) {
+      lessons = loadedLessons.obs;
+    } else {
+      lessons.assignAll(loadedLessons);
+    }
   }
 
   void next() async {
@@ -46,10 +57,10 @@ class LessonsController extends GetxController {
     if (!next.isLocked) {
       await Get.to(LessonView(LessonController(next)));
     } else if (next.isLocked) {
-      final purchaseChecker = PayHerePayment.purchaseChecker(
-          Get.find<AuthController>().user.value.id);
+      final ds = DataService();
 
-      final bool hasPurchased = await purchaseChecker.checkPurchaseStatus();
+      final bool hasPurchased =
+          await ds.getPurchaseStatus(Get.find<AuthController>().user.value.id);
 
       final bool isPreviousCompleted = true;
 

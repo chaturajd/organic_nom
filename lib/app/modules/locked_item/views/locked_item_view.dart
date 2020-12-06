@@ -38,6 +38,10 @@ class LockedItemView extends GetView<LockedItemController> {
                       Get.snackbar("Failed", "Payment failed");
                       break;
                     case PaymentStatus.Completed:
+                      final ds = DataService();
+                      ds.setPurchaseStatus(
+                          Get.find<AuthController>().user.value.id);
+                          print("purchased");
                       Get.snackbar("Thank you", "Succesfull");
                       break;
                     default:
@@ -63,6 +67,10 @@ class LockedItemView extends GetView<LockedItemController> {
         ),
       );
     }
-    return Scaffold(body: Center(child: Text("Something is wrong..."),),);
+    return Scaffold(
+      body: Center(
+        child: Text("Something is wrong..."),
+      ),
+    );
   }
 }
