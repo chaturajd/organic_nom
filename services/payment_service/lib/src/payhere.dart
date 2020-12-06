@@ -1,3 +1,4 @@
+import 'package:data_service/data_service.dart';
 import 'package:payhere_mobilesdk_flutter/payhere_mobilesdk_flutter.dart';
 import 'package:meta/meta.dart';
 import 'package:payment_service/src/payment_status.dart';
@@ -46,6 +47,8 @@ class PayHerePayment implements Payment {
       paymentObject,
       (paymentId) {
         print("One Time Payment Success. Payment Id: $paymentId");
+        final ds = DataService();
+        ds.setPurchaseStatus(userId);
         return Future.value(PaymentStatus.Completed);
       },
       (error) {
