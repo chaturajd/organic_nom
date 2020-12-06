@@ -88,7 +88,7 @@ class LessonsController extends GetxController {
           }).toList();
 
           lessons.assignAll(updatedLessons);
-          DataService()..updateActiveExercisePointer(current);
+          await DataService()..updateActiveExercisePointer(current);
 
           print("Lesson list Updated");
 

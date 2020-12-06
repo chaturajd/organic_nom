@@ -6,8 +6,13 @@ import 'package:organicnom/app/controllers/controllers/auth_controller.dart';
 import 'package:organicnom/app/modules/home/controllers/home_controller.dart';
 import 'package:organicnom/app/routes/app_pages.dart';
 import 'package:organicnom/app/views/views/video_container_view.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class HomeView extends GetView<HomeController> {
+  HomeView(){
+    Get.put(HomeController());
+  }
+
   void signOut() {
     Get.find<AuthController>().signOut();
   }
@@ -78,7 +83,26 @@ class HomeView extends GetView<HomeController> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: VideoContainerView(),
+              child:VideoContainerView(
+                // child: Be,
+              )
+              // YoutubePlayer(
+              //     controller: controller.youtubePlayerController,
+              //     showVideoProgressIndicator: true,
+              //     onReady: () {
+              //       controller.youtubePlayerController.addListener(() {});
+              //     },
+              //   ),
+              //  YoutubePlayerBuilder(
+              //   builder: (context,player){
+              //     return Column(
+              //       children: [
+              //         player
+              //       ],
+              //     );
+              //   },
+              //   player: 
+              // ),
             ),
             Expanded(
               child: Container(

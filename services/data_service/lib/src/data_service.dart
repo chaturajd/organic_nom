@@ -71,6 +71,7 @@ class DataService {
 
   ///Returns true if user has purchased, false otherwise
   Future<bool> getPurchaseStatus(String id) async {
+    return false;
     final box = await Hive.openBox("var");
     return box.get("purchased", defaultValue: false);
   }

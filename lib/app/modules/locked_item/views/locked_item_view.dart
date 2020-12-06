@@ -1,6 +1,7 @@
 import 'package:data_service/data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:organicnom/app/controllers/controllers/auth_controller.dart';
 import 'package:organicnom/app/modules/locked_item/controllers/locked_item_controller.dart';
 import 'package:payment_service/payment_service.dart';
@@ -19,36 +20,44 @@ class LockedItemView extends GetView<LockedItemController> {
     LockedStatus status = Get.arguments;
     if (status == LockedStatus.NotPaid) {
       return Scaffold(
+        backgroundColor: Colors.white,
         appBar: appBar,
         body: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Icon(
+                Icons.lock,
+                size: 64,
+                color: Colors.black26,
+              ),
+              SizedBox(
+                height: 48,
+              ),
               FlatButton(
                 onPressed: () async {
                   final user = Get.find<AuthController>().user.value;
                   final ph = PayHerePayment(
                       email: user.email, name: user.name, userId: user.id);
-                  final result = await ph.pay();
-
-                  switch (result) {
-                    case PaymentStatus.Canceled:
-                      Get.snackbar("Canceled", "Payment Canceled");
-                      break;
-                    case PaymentStatus.Failed:
-                      Get.snackbar("Failed", "Payment failed");
-                      break;
-                    case PaymentStatus.Completed:
-                      final ds = DataService();
-                      ds.setPurchaseStatus(
-                          Get.find<AuthController>().user.value.id);
-                          print("purchased");
-                      Get.snackbar("Thank you", "Succesfull");
-                      break;
-                    default:
-                      print("payment status unknown");
-                  }
+                  await ph.pay();
                 },
-                child: Text("Buy"),
+                child: Container(
+                  decoration: BoxDecoration(color: Colors.orange, boxShadow: [
+                    BoxShadow(
+                        blurRadius: 2,
+                        offset: Offset(2, 6),
+                        color: Colors.black12)
+                  ]),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 48, vertical: 16),
+                    child: Text(
+                      "Unlock",
+                      style: GoogleFonts.overpass(
+                          fontSize: 24, color: Colors.white),
+                    ),
+                  ),
+                ),
               )
             ],
           ),

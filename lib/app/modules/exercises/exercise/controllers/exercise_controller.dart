@@ -1,10 +1,9 @@
+import 'package:better_player/better_player.dart';
 import 'package:data_service/data_service.dart';
 import 'package:get/get.dart';
 import 'package:organicnom/app/modules/exercises/controllers/exercises_controller.dart';
 
 class ExerciseController extends GetxController {
-  ExerciseController(this.exercise);
-
   final Exercise exercise;
   final count = 0.obs;
 
@@ -12,8 +11,20 @@ class ExerciseController extends GetxController {
   RxBool isAnswered = false.obs;
   bool correctlyAnswered = false;
 
-  @override
-  void onInit() {}
+  BetterPlayerController betterPlayerController;
+
+  ExerciseController(this.exercise) {
+    BetterPlayerDataSource betterPlayerDataSource = BetterPlayerDataSource(
+        BetterPlayerDataSourceType.NETWORK,
+        "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+        // exercise.videoUrl,
+        // cacheConfiguration:
+        );
+    betterPlayerController = BetterPlayerController(
+      BetterPlayerConfiguration(autoPlay: false),
+      betterPlayerDataSource: betterPlayerDataSource,
+    );
+  }
 
   @override
   void onReady() {}

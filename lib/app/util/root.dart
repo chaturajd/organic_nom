@@ -14,7 +14,9 @@ class Root extends GetWidget<AuthController> {
     return Obx(() {
       print("ROOT USER STATE :: ${_controller.user.value}");
       return _controller.user.value != null
-          ? HomeView()
+          ? 
+          // Get.toNamed('/home')
+          HomeView()
           : SigninView();
       // return controller.user == null
       //     ? SigninView()

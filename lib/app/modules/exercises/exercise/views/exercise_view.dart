@@ -1,4 +1,4 @@
-import 'package:data_service/data_service.dart';
+import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,7 +8,6 @@ import 'package:organicnom/app/views/views/badge_view.dart';
 import 'package:organicnom/app/views/views/page_title_view.dart';
 import 'package:organicnom/app/views/views/subtitle_view.dart';
 import 'package:organicnom/app/views/views/video_container_view.dart';
-import 'package:payment_service/payment_service.dart';
 
 class ExerciseView extends GetView<ExerciseController> {
   ExerciseView(this.controller) {
@@ -121,7 +120,7 @@ class ExerciseView extends GetView<ExerciseController> {
                       width: double.infinity,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
-                        color : Colors.black12,
+                        color: Colors.black12,
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -134,7 +133,14 @@ class ExerciseView extends GetView<ExerciseController> {
                   ],
                 ),
                 SubtitleView("Explainer"),
-                VideoContainerView()
+                VideoContainerView(
+                  child: AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: BetterPlayer(
+                      controller: controller.betterPlayerController,
+                    ),
+                  ),
+                )
               ],
             ),
           ),

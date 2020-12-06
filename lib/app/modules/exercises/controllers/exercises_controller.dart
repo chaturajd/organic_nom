@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:organicnom/app/controllers/controllers/auth_controller.dart';
 import 'package:organicnom/app/modules/exercises/exercise/controllers/exercise_controller.dart';
 import 'package:organicnom/app/modules/exercises/exercise/views/exercise_view.dart';
-import 'package:payment_service/payment_service.dart';
+
 
 class ExercisesController extends GetxController {
   RxList<Exercise> exercises;
@@ -119,7 +119,7 @@ class ExercisesController extends GetxController {
           print("Upadated list ${updatedExercises.length}");
           // exercises.value = updatedExercises;
           exercises.assignAll(updatedExercises);
-          DataService()..updateActiveExercisePointer(current);
+          await DataService()..updateActiveExercisePointer(current);
           print("Unlocked : ${exercises.length}");
           await Get.to(
             ExerciseView(ExerciseController(exercises[current])),
