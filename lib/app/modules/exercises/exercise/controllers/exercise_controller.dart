@@ -10,6 +10,7 @@ class ExerciseController extends GetxController {
 
   RxInt selectedAnswer = 0.obs;
   RxBool isAnswered = false.obs;
+  bool correctlyAnswered = false;
 
   @override
   void onInit() {}
@@ -32,16 +33,21 @@ class ExerciseController extends GetxController {
 
     if (selectedAnswer.value == exercise.correctAnswer) {
       isAnswered.value = true;
+      correctlyAnswered = true;
     } else {
       Get.snackbar("Wrong", "Correct Answer : ${exercise.correctAnswer}");
     }
+  }
+
+  String getCorrectAnswer() {
+    return exercise.answers[exercise.correctAnswer];
   }
 
   void changeSelection(selectionId) {
     selectedAnswer.value = selectionId;
   }
 
-  next(){
+  next() {
     Get.find<ExercisesController>().next();
   }
 }

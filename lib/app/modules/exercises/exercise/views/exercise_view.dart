@@ -4,7 +4,10 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:organicnom/app/modules/exercises/exercise/controllers/exercise_controller.dart';
 import 'package:organicnom/app/modules/locked_item/views/locked_item_view.dart';
+import 'package:organicnom/app/views/views/badge_view.dart';
 import 'package:organicnom/app/views/views/page_title_view.dart';
+import 'package:organicnom/app/views/views/subtitle_view.dart';
+import 'package:organicnom/app/views/views/video_container_view.dart';
 import 'package:payment_service/payment_service.dart';
 
 class ExerciseView extends GetView<ExerciseController> {
@@ -32,6 +35,7 @@ class ExerciseView extends GetView<ExerciseController> {
       if (!controller.isAnswered.value) {
         return Scaffold(
           appBar: appBar,
+          backgroundColor: Colors.white,
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               controller.checkAnswer();
@@ -82,13 +86,58 @@ class ExerciseView extends GetView<ExerciseController> {
         );
       } else {
         return Scaffold(
+          backgroundColor: Colors.white,
           appBar: appBar,
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               controller.next();
             },
           ),
-          body: Center(child: Text("Explainer View")),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    PageTitleView(controller.exercise.title),
+                    BadgeView(
+                      isCorrect: controller.correctlyAnswered,
+                    ),
+                  ],
+                ),
+                !controller.correctlyAnswered
+                    ? Column(
+                        children: [
+                          SubtitleView("Your Answer"),
+                          Text("controller.givenAnswer"),
+                        ],
+                      )
+                    : Container(),
+                Column(
+                  children: [
+                    SubtitleView("Correct Answer"),
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color : Colors.black12,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          controller.getCorrectAnswer(),
+                          style: GoogleFonts.overpass(fontSize: 18),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SubtitleView("Explainer"),
+                VideoContainerView()
+              ],
+            ),
+          ),
         );
       }
     });
