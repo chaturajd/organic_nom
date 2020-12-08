@@ -1,0 +1,15 @@
+name: rupa_box
+description: A video player wrapped around vlc player
+version: 1.0.0
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_vlc_player: ^4.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter

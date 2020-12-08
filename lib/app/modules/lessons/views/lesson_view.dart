@@ -1,14 +1,10 @@
-import 'package:data_service/data_service.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:organicnom/app/modules/lessons/controllers/lesson_controller.dart';
-import 'package:organicnom/app/modules/lessons/controllers/lessons_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:organicnom/app/modules/locked_item/views/locked_item_view.dart';
 import 'package:organicnom/app/views/views/page_title_view.dart';
 import 'package:organicnom/app/views/views/video_container_view.dart';
-import 'package:payment_service/payment_service.dart';
 
 class LessonView extends GetView<LessonController> {
   LessonView(this.controller){
@@ -17,9 +13,7 @@ class LessonView extends GetView<LessonController> {
   final controller;
 
   var appBar = AppBar(
-    backgroundColor: Colors.white,
     leading: BackButton(
-      color: Colors.black,
     ),
     elevation: 0,
   );
@@ -28,7 +22,6 @@ class LessonView extends GetView<LessonController> {
   Widget build(BuildContext context) {
     if (!controller.lesson.isLocked) {
       return Scaffold(
-        backgroundColor: Colors.white,
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             controller.next();

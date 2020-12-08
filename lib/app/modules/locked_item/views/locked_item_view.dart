@@ -8,9 +8,7 @@ import 'package:payment_service/payment_service.dart';
 
 class LockedItemView extends GetView<LockedItemController> {
   final appBar = AppBar(
-    backgroundColor: Colors.white,
     leading: BackButton(
-      color: Colors.black,
     ),
     elevation: 0,
   );
@@ -20,7 +18,6 @@ class LockedItemView extends GetView<LockedItemController> {
     LockedStatus status = Get.arguments;
     if (status == LockedStatus.NotPaid) {
       return Scaffold(
-        backgroundColor: Colors.white,
         appBar: appBar,
         body: Center(
           child: Column(
@@ -29,7 +26,7 @@ class LockedItemView extends GetView<LockedItemController> {
               Icon(
                 Icons.lock,
                 size: 64,
-                color: Colors.black26,
+                color: Colors.white54,
               ),
               SizedBox(
                 height: 48,
@@ -46,7 +43,7 @@ class LockedItemView extends GetView<LockedItemController> {
                     BoxShadow(
                         blurRadius: 2,
                         offset: Offset(2, 6),
-                        color: Colors.black12)
+                        color: Colors.black12,)
                   ]),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(

@@ -8,6 +8,7 @@ import 'package:organicnom/app/modules/exercises/exercise/views/exercise_view.da
 class ExercisesController extends GetxController {
   RxList<Exercise> exercises;
 
+  ///Exercises List loading status
   RxBool loaded = false.obs;
 
   ///Active exercise to be completed
@@ -25,14 +26,13 @@ class ExercisesController extends GetxController {
     // await Get.toNamed('exercises/exercise', arguments: getExercise(index));
   }
 
+  @deprecated
   void gotoExplainer() async {
     await Get.offAndToNamed('/explainer', arguments: getExercise(current));
     // Get.off(page)
   }
 
   onAnswerSubmit() {
-    //Unlock next
-    //Go to explainer
     gotoExplainer();
   }
 

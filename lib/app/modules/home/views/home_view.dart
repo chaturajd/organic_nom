@@ -1,3 +1,4 @@
+import 'package:db_driver/db_driver.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -8,8 +9,10 @@ import 'package:organicnom/app/routes/app_pages.dart';
 import 'package:organicnom/app/views/views/video_container_view.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+enum PopUpSelection { Logout, ThemeChange }
+
 class HomeView extends GetView<HomeController> {
-  HomeView(){
+  HomeView() {
     Get.put(HomeController());
   }
 
@@ -29,10 +32,10 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
         elevation: 0,
       ),
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -40,26 +43,124 @@ class HomeView extends GetView<HomeController> {
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 36),
               child: Row(
                 children: [
-                  circleButton(
-                      icon: Icon(Icons.supervised_user_circle_rounded)),
+                  Container(
+                    // child: FittedBox(
+                      // fit: BoxFit.fill,
+                    //   child: Image.network(
+                    //     Get.find<AuthController>().user.value.photo,
+                    //     // cacheHeight: 20,
+                    //     // cacheWidth: 20,
+                    //     errorBuilder: (context, obj, stack) {
+                    //       return Icon(Icons.supervised_user_circle);
+                    //     },
+                    //   ),
+                    // ),
+                    child: FlatButton(onPressed: ()async{
+                      DbDriver driver = DbDriver();
+                      await driver.initialize();
+                      await driver.createTestTable();
+
+                    }, child: Text("asd") ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          offset: Offset(4, 8),
+                          blurRadius: 23,
+                          spreadRadius: -9,
+                          color: Colors.black87,
+                        )
+                      ],
+                    ),
+                  ),
+
+                  // circleButton(
+                  //   icon: Icon(Icons.supervised_user_circle_rounded),
+                  // ),
                   Expanded(
-                      child: Padding(
-                    padding: const EdgeInsets.only(left: 16),
-                    child: Center(
-                      child: Text(
-                        Get.find<AuthController>().user.value.name,
-                        style: GoogleFonts.overpass(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.deepOrange,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: Center(
+                        child: Text(
+                          Get.find<AuthController>().user.value.name,
+                          style: GoogleFonts.overpass(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.deepOrange,
+                          ),
                         ),
                       ),
                     ),
-                  )),
-                  circleButton(
-                    icon: Icon(Icons.logout, color: Colors.red),
-                    onPressed: signOut,
-                  )
+                  ),
+                  PopupMenuButton<PopUpSelection>(
+                    onSelected: (PopUpSelection selection) {
+                      switch (selection) {
+                        case PopUpSelection.Logout:
+                          signOut();
+                          break;
+                        case PopUpSelection.ThemeChange:
+                          if (Get.isDarkMode) {
+                            Get.changeTheme(ThemeData.light());
+                          } else {
+                            Get.changeTheme(ThemeData.dark());
+                          }
+                          break;
+                        default:
+                      }
+                    },
+                    onCanceled: () {},
+                    itemBuilder: (_) {
+                      return [
+                        PopupMenuItem(
+                          value: PopUpSelection.ThemeChange,
+                          child: Row(
+                            children: [
+                              Icon(FontAwesomeIcons.solidSun),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Get.isDarkMode
+                                    ? Text("Light Theme")
+                                    : Text("Dark Theme"),
+                              ),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: PopUpSelection.Logout,
+                          child: Row(
+                            children: [
+                              Icon(Icons.logout),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Text("Logout"),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ];
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        boxShadow: [
+                          BoxShadow(
+                            offset: Offset(4, 8),
+                            blurRadius: 23,
+                            spreadRadius: -9,
+                            color: Colors.black87,
+                          )
+                        ],
+                      ),
+                      child: Icon(Icons.menu),
+                      width: 44,
+                      height: 44,
+                    ),
+                  ),
+                  // circleButton(
+                  //   icon: Icon(Icons.logout, color: Colors.red),
+                  //   // onPressed: signOut,
+                  // ),
                 ],
               ),
             ),
@@ -82,28 +183,28 @@ class HomeView extends GetView<HomeController> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child:VideoContainerView(
-                // child: Be,
-              )
-              // YoutubePlayer(
-              //     controller: controller.youtubePlayerController,
-              //     showVideoProgressIndicator: true,
-              //     onReady: () {
-              //       controller.youtubePlayerController.addListener(() {});
-              //     },
-              //   ),
-              //  YoutubePlayerBuilder(
-              //   builder: (context,player){
-              //     return Column(
-              //       children: [
-              //         player
-              //       ],
-              //     );
-              //   },
-              //   player: 
-              // ),
-            ),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: VideoContainerView(
+                    // child: Be,
+                    )
+                // YoutubePlayer(
+                //     controller: controller.youtubePlayerController,
+                //     showVideoProgressIndicator: true,
+                //     onReady: () {
+                //       controller.youtubePlayerController.addListener(() {});
+                //     },
+                //   ),
+                //  YoutubePlayerBuilder(
+                //   builder: (context,player){
+                //     return Column(
+                //       children: [
+                //         player
+                //       ],
+                //     );
+                //   },
+                //   player:
+                // ),
+                ),
             Expanded(
               child: Container(
                 child: Align(
@@ -177,7 +278,6 @@ class HomeView extends GetView<HomeController> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(100),
-          color: Colors.white,
           boxShadow: [
             BoxShadow(
               offset: Offset(4, 8),

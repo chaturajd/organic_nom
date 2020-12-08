@@ -9,8 +9,8 @@ class VideoContainerView extends GetView {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 4/3,
-          child: Container(
+      aspectRatio: 4 / 3,
+      child: Container(
         width: double.infinity,
         // height: child ==null ? 300 : ,
         child: child != null
@@ -20,14 +20,18 @@ class VideoContainerView extends GetView {
                 size: 64,
                 color: Colors.red[200],
               ),
-        decoration: BoxDecoration(boxShadow: [
-          BoxShadow(
-            offset: Offset(0, 4),
-            blurRadius: 24,
-            spreadRadius: 0,
-            color: Colors.black12,
-          ),
-        ], borderRadius: BorderRadius.circular(16), color: Colors.white),
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              offset: Offset(0, 4),
+              blurRadius: 24,
+              spreadRadius: 0,
+              color: Colors.black12,
+            ),
+          ],
+          color: Get.theme.primaryColorDark,
+          borderRadius: BorderRadius.circular(16),
+        ),
       ),
     );
   }

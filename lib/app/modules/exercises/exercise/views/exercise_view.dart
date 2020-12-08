@@ -1,5 +1,6 @@
 import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:organicnom/app/modules/exercises/exercise/controllers/exercise_controller.dart';
@@ -17,10 +18,7 @@ class ExerciseView extends GetView<ExerciseController> {
   final controller;
 
   final appBar = AppBar(
-    backgroundColor: Colors.white,
-    leading: BackButton(
-      color: Colors.black,
-    ),
+    leading: BackButton(),
     elevation: 0,
   );
 
@@ -34,7 +32,6 @@ class ExerciseView extends GetView<ExerciseController> {
       if (!controller.isAnswered.value) {
         return Scaffold(
           appBar: appBar,
-          backgroundColor: Colors.white,
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               controller.checkAnswer();
@@ -44,6 +41,9 @@ class ExerciseView extends GetView<ExerciseController> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               children: [
+                Obx(() {
+                  return Text(controller.errormsg.value);
+                }),
                 PageTitleView(controller.exercise.title),
                 Center(
                   child: Padding(
@@ -70,7 +70,10 @@ class ExerciseView extends GetView<ExerciseController> {
                         id: answer.key,
                         answer: answer.value,
                         color: answer.key == controller.selectedAnswer.value
-                            ? Colors.orange
+                            ? Get.theme.accentColor
+                            : Get.theme.primaryColor,
+                        textColor: answer.key == controller.selectedAnswer.value
+                            ? Colors.black
                             : Colors.white,
                       ),
                     );
@@ -85,7 +88,6 @@ class ExerciseView extends GetView<ExerciseController> {
         );
       } else {
         return Scaffold(
-          backgroundColor: Colors.white,
           appBar: appBar,
           floatingActionButton: FloatingActionButton(
             onPressed: () {
@@ -134,13 +136,30 @@ class ExerciseView extends GetView<ExerciseController> {
                 ),
                 SubtitleView("Explainer"),
                 VideoContainerView(
-                  child: AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: BetterPlayer(
-                      controller: controller.betterPlayerController,
-                    ),
+                  child: VlcPlayer(
+                    url: "http://192.168.8.109/v.mp4",
+                    aspectRatio: 16/9,
+                    controller: controller.vlcPlayerController,
+                    placeholder: CircularProgressIndicator(),
+                    options: [],
                   ),
-                )
+
+                  // Obx(
+                  //   () {
+                  //     if (controller.betterPlayerController.value != null) {
+                  //       return AspectRatio(
+                  //         aspectRatio: 16 / 9,
+                  //         child: BetterPlayer(
+                  //           controller: controller.betterPlayerController.value,
+                  //         ),
+                  //       );
+                  //     } else {
+                  //       return Text(
+                  //           controller.hasPlayerInitialized.value.toString());
+                  //     }
+                  //   },
+                  // ),
+                ),
               ],
             ),
           ),
@@ -154,8 +173,9 @@ class Answer extends StatelessWidget {
   const Answer(
       {Key key,
       @required this.answer,
-      this.color = Colors.white,
       @required this.id,
+      this.color = Colors.white,
+      this.textColor = Colors.white,
       this.onTap})
       : super(key: key);
 
@@ -163,6 +183,7 @@ class Answer extends StatelessWidget {
   final int id;
   final Function(int) onTap;
   final Color color;
+  final Color textColor;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -174,9 +195,7 @@ class Answer extends StatelessWidget {
             padding: const EdgeInsets.all(10.0),
             child: Text(
               answer,
-              style: GoogleFonts.overpass(
-                fontSize: 20,
-              ),
+              style: GoogleFonts.overpass(fontSize: 20, color: textColor),
             ),
           ),
         ),

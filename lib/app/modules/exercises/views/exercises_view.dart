@@ -12,10 +12,8 @@ class ExercisesView extends GetView<ExercisesController> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
-          color: Colors.black,
         ),
         elevation: 0,
-        backgroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 36),
@@ -28,8 +26,15 @@ class ExercisesView extends GetView<ExercisesController> {
                   print("Building exercises list");
                   return !controller.loaded.value
                       ? Center(
-                          child: 
-                          Text(controller.loaded.toString())
+                          child: Column(
+                          children: [
+                            CircularProgressIndicator(),
+                            Text(
+                              controller.loaded.toString(),
+                              style: TextStyle(color: Colors.transparent),
+                            ),
+                          ],
+                        )
                           // IconButton(
                           //   icon: Icon(
                           //     Icons.refresh,
@@ -39,7 +44,7 @@ class ExercisesView extends GetView<ExercisesController> {
                           //     controller.refreshExercisesList();
                           //   },
                           // ),
-                        )
+                          )
                       : Obx(
                           () => ListView.builder(
                             physics: BouncingScrollPhysics(),

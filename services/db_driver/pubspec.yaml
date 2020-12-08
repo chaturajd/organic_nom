@@ -1,0 +1,15 @@
+name: db_driver
+description: Package that manages the backend data domain
+version: 1.0.0
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  mysql1: ^0.17.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter

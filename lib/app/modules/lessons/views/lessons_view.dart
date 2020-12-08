@@ -10,12 +10,12 @@ class LessonsView extends GetView<LessonsController> {
     return Scaffold(
         appBar: AppBar(
           leading: BackButton(
-            color: Colors.black,
+            // color: Colors.black,
           ),
           elevation: 0,
-          backgroundColor: Colors.white,
+          // backgroundColor: Colors.white,
         ),
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 36),
           child: Column(
@@ -25,7 +25,15 @@ class LessonsView extends GetView<LessonsController> {
                 child: Obx(
                   () => !controller.loaded.value
                       ? Center(
-                          child: Text(controller.loaded.toString()),
+                          child: Column(
+                            children: [
+                              CircularProgressIndicator(),
+                              Text(
+                                controller.loaded.toString(),
+                                style: TextStyle(color: Colors.transparent),
+                              ),
+                            ],
+                          ),
                         )
                       : Obx(
                           () => ListView.builder(
