@@ -5,6 +5,7 @@ class Lesson {
   final String videoUrl;
   final bool isCompleted;
   final bool isLocked;
+  final String titleSinhala;
 
   Lesson({
     this.id,
@@ -13,6 +14,7 @@ class Lesson {
     this.videoUrl,
     this.isCompleted = false,
     this.isLocked = true,
+    this.titleSinhala,
   });
 }
 

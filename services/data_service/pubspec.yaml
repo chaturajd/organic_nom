@@ -12,6 +12,9 @@ dependencies:
   hive: ^1.4.4+1
   hive_flutter:
   path_provider:
+  
+  db_driver:
+    path: ../db_driver
 
 dev_dependencies:
   flutter_test:

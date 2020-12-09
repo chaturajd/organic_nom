@@ -2,3 +2,14 @@ Adding IOS Support
     - Firbase integration
     - Payhere integration
     - vlc video player integration
+
+Database Requirements
+    - Lesson / Exercisse Pointer values
+
+Clarifications
+    - Payment model (Per Exercise/Lesson or Onetime Payment)
+    - Lesson/Exercise description
+    - App resources last updated date/time
+    - What kind of question are there gonna be in app (MCQ/Sructured ...)
+    - Answer set for MCQs
+    - 

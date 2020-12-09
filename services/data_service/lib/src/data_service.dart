@@ -1,18 +1,19 @@
-import 'dart:math';
-
+import 'package:data_service/src/server_types.dart';
+import 'package:data_service/src/servers/dataservers.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
+// import './servers/FakeDataServer.dart';
 import './models/models.dart';
+import './data_server_factory.dart';
 
-abstract class IDataService {
-  List<Lesson> getAllLessons();
-  List<Exercise> getAllExercise();
-}
+
 
 class DataService {
-  final _netDataService = NetworkDataService();
+  // final defaultServer = FakeDataServer();
 
+  final defaultServer = DataServerFactory().get(ServerType.fake);
+  RemoteDataServer rdserver = DataServerFactory().get(ServerType.remote);
   // var varBox;
 
   /// Should be initialized before using cache
@@ -26,14 +27,14 @@ class DataService {
   ///TODO:
   ///If internet is avaliable refresh cache otherwise get data from cache
   Future<List<Lesson>> getAllLessons() async {
-    return _netDataService.getAllLessons(active: await getActiveLessonId());
+    return await defaultServer.getAllLessons(active: await getActiveLessonId());
   }
 
   ///Get all lessons.
   ///TODO:
   ///If internet is avaliable refresh cache otherwise get data from cache
   Future<List<Exercise>> getAllExercises() async {
-    return _netDataService.getAllExercise(active: await getActiveExerciseId());
+    return await defaultServer.getAllExercise(active: await getActiveExerciseId());
   }
 
   // void unlockNextExercise() {
@@ -71,7 +72,6 @@ class DataService {
 
   ///Returns true if user has purchased, false otherwise
   Future<bool> getPurchaseStatus(String id) async {
-    return false;
     final box = await Hive.openBox("var");
     return box.get("purchased", defaultValue: false);
   }
@@ -81,50 +81,12 @@ class DataService {
   Future<void> setPurchaseStatus(String userId, {bool purchased = true}) async {
     final box = await Hive.openBox("var");
     box.put("purchased", purchased);
+    print("purchase state updated");
   }
+
+  // testrdserver(){
+  //   rdserver.testserver();
+  // }
 }
 
 class InternetNotAvaliable implements Exception {}
-
-class NetworkDataService implements IDataService {
-  // Unlocked <= ActiveID < Locked
-  static const _chars = 'abc def gh ijklm nopqr stu vw xyz';
-  Random _rnd = Random();
-  getRandomString(int length) {
-    return String.fromCharCodes(Iterable.generate(
-        length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
-  }
-
-  @override
-  List<Lesson> getAllLessons({int active = 0}) {
-    return List<Lesson>.generate(100, (index) {
-      return Lesson(
-        id: index,
-        title: "Lesson ${index + 1}",
-        description: getRandomString(_rnd.nextInt(80)),
-        isCompleted: index <= active ? true : false,
-        isLocked: index <= active ? false : true,
-        videoUrl: "",
-      );
-    });
-  }
-
-  @override
-  List<Exercise> getAllExercise({int active}) {
-    return List<Exercise>.generate(100, (index) {
-      return Exercise(
-          title: "Exercise ${index + 1}",
-          description: getRandomString(_rnd.nextInt(80)),
-          answers: {
-            1: getRandomString(_rnd.nextInt(15) + 1),
-            2: getRandomString(_rnd.nextInt(15) + 1),
-            3: getRandomString(_rnd.nextInt(15) + 1),
-            4: getRandomString(_rnd.nextInt(15) + 1),
-          },
-          correctAnswer: _rnd.nextInt(3) + 1,
-          isCompleted: index <= active ? true : false,
-          isLocked: index <= active ? false : true,
-          id: index);
-    });
-  }
-}

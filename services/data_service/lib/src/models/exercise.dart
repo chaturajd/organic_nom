@@ -1,6 +1,7 @@
 class Exercise {
   final int id;
   final String title;
+  final String titleSinhala;
   final String description;
   final String videoUrl;
   final bool isCompleted;
@@ -11,6 +12,7 @@ class Exercise {
   Exercise({
     this.id,
     this.title,
+    this.titleSinhala,
     this.description,
     this.videoUrl,
     this.isCompleted,
