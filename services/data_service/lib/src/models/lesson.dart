@@ -1,5 +1,6 @@
 class Lesson {
   final int id;
+  final int dbId;
   final String title;
   final String description;
   final String videoUrl;
@@ -9,6 +10,7 @@ class Lesson {
 
   Lesson({
     this.id,
+    this.dbId,
     this.title,
     this.description,
     this.videoUrl,
@@ -20,4 +22,4 @@ class Lesson {
 
 class LockedLesson extends Lesson {}
 
-class NoSuchLesson extends Lesson implements Exception{}
+class NoSuchLesson extends Lesson implements Exception {}

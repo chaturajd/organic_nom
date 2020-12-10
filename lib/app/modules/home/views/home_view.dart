@@ -1,3 +1,4 @@
+import 'package:data_service/data_service.dart';
 import 'package:db_driver/db_driver.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -45,7 +46,7 @@ class HomeView extends GetView<HomeController> {
                 children: [
                   Container(
                     // child: FittedBox(
-                      // fit: BoxFit.fill,
+                    // fit: BoxFit.fill,
                     //   child: Image.network(
                     //     Get.find<AuthController>().user.value.photo,
                     //     // cacheHeight: 20,
@@ -55,12 +56,16 @@ class HomeView extends GetView<HomeController> {
                     //     },
                     //   ),
                     // ),
-                    child: FlatButton(onPressed: ()async{
-                      DbDriver driver = DbDriver();
-                      await driver.initialize();
-                      await driver.createTestTable();
+                    child: FlatButton(
+                        onPressed: () async {
+                          // DbDriver driver = DbDriver();
+                          // await driver.initialize();
+                          // await driver.createTestTable();
 
-                    }, child: Text("asd") ),
+                          // DataService ds = DataService();
+                          // ds.testrdserver();
+                        },
+                        child: Text("asd")),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
                       color: Colors.white,
@@ -345,3 +350,18 @@ class InnerClipper extends CustomClipper<Path> {
     return false;
   }
 }
+
+// import 'package:flutter/material.dart';
+
+// class HomeView extends StatelessWidget {
+
+//   @override
+//   Widget build(BuildContext context) {
+//    return Scaffold(
+//       body: Container(child: Center(child:Text(
+//         "asdasd"
+//       )),
+//     ));
+//   }
+
+// }

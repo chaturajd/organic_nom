@@ -1,16 +1,18 @@
 class Exercise {
   final int id;
+  final int dbId;
   final String title;
   final String titleSinhala;
   final String description;
   final String videoUrl;
-  final bool isCompleted;
-  final Map<int, String> answers;
   final int correctAnswer;
+  final Map<int, String> answers;
+  final bool isCompleted;
   final bool isLocked;
 
   Exercise({
     this.id,
+    this.dbId,
     this.title,
     this.titleSinhala,
     this.description,

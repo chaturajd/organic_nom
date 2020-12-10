@@ -1,7 +1,8 @@
 import 'package:data_service/src/models/models.dart';
 
-enum VideoType{Lesson,MCQ,StructuredEssay,Essay,Answers}
-enum UrlType{Youtube,GDrive}
+enum VideoType { Lesson, MCQ, StructuredEssay, Essay, Answers }
+enum UrlType { Youtube, GDrive }
+
 class Video {
   int id;
   String titleSin;
@@ -12,8 +13,7 @@ class Video {
   String image;
   dynamic answer;
 
-
-  Video.fromDbResult(result){
+  Video.fromDbResult(result) {
     this.id = result["id"];
     this.titleEng = result["titleEng"];
     this.titleSin = result["titleSin"];
@@ -22,9 +22,10 @@ class Video {
     this.answer = result["answer"];
   }
 
-  Lesson toLesson({bool isCompleted = false, bool isLocked = true}){
+  Lesson toLesson({bool isCompleted = false, bool isLocked = true, int id}) {
     return Lesson(
-      id: this.id,
+      id: id,
+      dbId: this.id,
       description: "DESCRIPTION",
       title: this.titleEng,
       titleSinhala: this.titleSin,
@@ -34,25 +35,25 @@ class Video {
     );
   }
 
-  Exercise toExercise({bool isCompleted = false,bool isLocked = true}){
+  Exercise toExercise(
+      {int id, bool isCompleted = false, bool isLocked = true}) {
     return Exercise(
-      id: this.id,
+      id: id,
+      dbId: this.id,
       description: "DESCRIPTION",
       answers: {
-        1 : "Answer 1",
+        1: "Answer 1",
         2: "Answer 2",
-        3:"Answer 3",
-        4:"Answer 4",
+        3: "Answer 3",
+        4: "Answer 4",
         5: "Answer 5"
       },
-      correctAnswer: this.answer,
+      correctAnswer: int.tryParse(this.answer),
       title: this.titleEng,
       titleSinhala: this.titleSin,
       videoUrl: this.url,
       isCompleted: isCompleted,
       isLocked: isLocked,
-
     );
   }
-
 }

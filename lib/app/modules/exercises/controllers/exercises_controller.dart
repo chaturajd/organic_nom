@@ -4,7 +4,6 @@ import 'package:organicnom/app/controllers/controllers/auth_controller.dart';
 import 'package:organicnom/app/modules/exercises/exercise/controllers/exercise_controller.dart';
 import 'package:organicnom/app/modules/exercises/exercise/views/exercise_view.dart';
 
-
 class ExercisesController extends GetxController {
   RxList<Exercise> exercises;
 
@@ -66,11 +65,12 @@ class ExercisesController extends GetxController {
 
   Future<void> next() async {
     current++;
+    int nextId = current;
     //  var exercise = getExercise(current);
     //  print("EXERCISE TYPE : ${exercise.runtimeType.toString()}");
 
     Get.back();
-    final Exercise next = getExercise(current);
+    final Exercise next = getExercise(nextId);
     if (!next.isLocked) {
       print("Goint to next exercise");
       await Get.to(ExerciseView(ExerciseController(next)));
@@ -84,11 +84,13 @@ class ExercisesController extends GetxController {
 
       final bool hasPurchased =
           await ds.getPurchaseStatus(Get.find<AuthController>().user.value.id);
-          
+
       final bool isPreviousCompleted = true;
 
       if (hasPurchased) {
+        print("ExercisesController :: item has valid purchase");
         if (isPreviousCompleted) {
+          print("ExercisesController :: previous items are completed");
           var updatedExercises = exercises.map(
             (exercise) {
               if (exercise.id == current - 1) {
@@ -116,23 +118,23 @@ class ExercisesController extends GetxController {
               return exercise;
             },
           ).toList();
-          print("Upadated list ${updatedExercises.length}");
+          print("ExercisesController :: Upadated list ${updatedExercises.length}");
           // exercises.value = updatedExercises;
           exercises.assignAll(updatedExercises);
-          await DataService()..updateActiveExercisePointer(current);
-          print("Unlocked : ${exercises.length}");
+          DataService()..updateActiveExercisePointer(current);
+          print("ExercisesController :: Unlocked : ${exercises.length}");
           await Get.to(
             ExerciseView(ExerciseController(exercises[current])),
           );
         } else {
-          print("You should complete previous exercise to unlock");
+          print("ExercisesController :: You should complete previous exercise to unlock");
           await Get.to(
             ExerciseView(ExerciseController(next)),
             arguments: LockedStatus.Incompleted,
           );
         }
       } else {
-        print("You need to pay to continue");
+        print("ExercisesController :: You need to pay to continue");
         await Get.to(
           ExerciseView(ExerciseController(next)),
           arguments: LockedStatus.NotPaid,

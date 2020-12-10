@@ -75,7 +75,7 @@ class LockedItemView extends GetView<LockedItemController> {
     }
     return Scaffold(
       body: Center(
-        child: Text("Something is wrong..."),
+        child: Text("Sorry this item is locked "),
       ),
     );
   }
