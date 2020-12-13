@@ -167,7 +167,7 @@ class DataService {
     // }
   }
 
-  Future<int> getServerUserId(){
+  Future<int> getServerUserId() {
     return cacheServer.getServerUserId();
   }
 
@@ -177,13 +177,17 @@ class DataService {
     var user = await rdserver.getUserByOauthId(fbuser.id);
     if (user == null) {
       yield ServerSigninStatus.Registering;
+      String name = fbuser.name;
+      String firstName = name.split(" ")[0];
+      String lastName = name.split(" ")[1];
 
       await rdserver.addUser(User(
-        firstName: fbuser.name,
+        firstName: firstName,
+        lastName: lastName == null ? "" : lastName,
         oauthProvider: 'google',
-        lastName: '',
         oauthUid: fbuser.id,
         picture: fbuser.photo,
+        email: fbuser.email,
       ));
 
       user = await rdserver.getUserByOauthId(fbuser.id);

@@ -25,9 +25,18 @@ class DbDriver {
   }
 
   factory DbDriver({
-    String host = "localhost",
+    //ON PHONE
+    // String host = "localhost",
+    // int port = 3306,
+    // String user = "root",
+    // String password = 'password',
+    // String database = 'app',
+
+    //
+
+    String host = "192.168.8.109",
     int port = 3306,
-    String user = "root",
+    String user = "organicnom",
     String password = 'password',
     String database = 'app',
   }) {
@@ -47,9 +56,9 @@ class DbDriver {
   }
 
   Future<dynamic> terminateConnection() async {
-    try{
+    try {
       _conn.close();
-    }catch (e){
+    } catch (e) {
       print("DBDRIVER :: connectioin could not close");
     }
   }
@@ -74,12 +83,11 @@ class DbDriver {
     terminateConnection();
   }
 
-  rawInsert(String query) async{
+  rawInsert(String query) async {
     await initialize();
-    try{
-       return await _conn.query(query);
-    }
-    catch(e){
+    try {
+      return await _conn.query(query);
+    } catch (e) {
       print("Database Driver : Error (rawUpdate): $e");
     }
   }

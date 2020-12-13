@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:data_service/data_service.dart';
 import 'package:db_driver/db_driver.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,82 @@ class HomeView extends GetView<HomeController> {
     return Scaffold(
       appBar: AppBar(
         // backgroundColor: Colors.white,
+        actions: [
+          PopupMenuButton<PopUpSelection>(
+            onSelected: (PopUpSelection selection) {
+              switch (selection) {
+                case PopUpSelection.Logout:
+                  signOut();
+                  break;
+                case PopUpSelection.ThemeChange:
+                  if (Get.isDarkMode) {
+                    Get.changeTheme(ThemeData.light());
+                  } else {
+                    Get.changeTheme(ThemeData.dark());
+                  }
+                  break;
+                default:
+              }
+            },
+            onCanceled: () {},
+            itemBuilder: (_) {
+              return [
+                PopupMenuItem(
+                  value: PopUpSelection.ThemeChange,
+                  child: Row(
+                    children: [
+                      Icon(FontAwesomeIcons.solidSun),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Get.isDarkMode
+                            ? Text("Light Theme")
+                            : Text("Dark Theme"),
+                      ),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: PopUpSelection.Logout,
+                  child: Row(
+                    children: [
+                      Icon(Icons.logout),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Text("Logout"),
+                      ),
+                    ],
+                  ),
+                ),
+              ];
+            },
+            child: Container(
+              child: CircleAvatar(
+                radius: 20,
+                // child:
+                backgroundImage: CachedNetworkImageProvider(
+                  Get.find<AuthController>().user.value.photo,
+                ),
+              ),
+            ),
+
+            //  Container(
+            //   decoration: BoxDecoration(
+            //     borderRadius: BorderRadius.circular(100),
+            //     boxShadow: [
+            //       BoxShadow(
+            //         offset: Offset(4, 8),
+            //         blurRadius: 23,
+            //         spreadRadius: -9,
+            //         color: Colors.black87,
+            //       )
+            //     ],
+            //   ),
+            //   child: Icon(Icons.menu),
+            //   width: 44,
+            //   height: 44,
+            // ),
+          ),
+        ],
         elevation: 0,
       ),
       // backgroundColor: Colors.white,
@@ -52,63 +129,62 @@ class HomeView extends GetView<HomeController> {
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 36),
               child: Row(
                 children: [
-                  Container(
-                    // child: FittedBox(
-                    // fit: BoxFit.fill,
-                    //   child: Image.network(
-                    //     Get.find<AuthController>().user.value.photo,
-                    //     // cacheHeight: 20,
-                    //     // cacheWidth: 20,
-                    //     errorBuilder: (context, obj, stack) {
-                    //       return Icon(Icons.supervised_user_circle);
-                    //     },
-                    //   ),
-                    // ),
-                    // child: Image(
-                    //   image: NetworkImageWithRetry(
-                    //     Get.find<AuthController>().user.value.photo,
+                  // child: FittedBox(
+                  // fit: BoxFit.fill,
+                  //   child: Image.network(
+                  //     Get.find<AuthController>().user.value.photo,
+                  //     // cacheHeight: 20,
+                  //     // cacheWidth: 20,
+                  //     errorBuilder: (context, obj, stack) {
+                  //       return Icon(Icons.supervised_user_circle);
+                  //     },
+                  //   ),
+                  // ),
+                  // child: Image(
+                  //   image: NetworkImageWithRetry(
+                  //     Get.find<AuthController>().user.value.photo,
 
-                    //   ),
-                    // ),
-                    child: FlatButton(
-                        onPressed: () async {
-                          // DbDriver driver = DbDriver();
-                          // await driver.initialize();
-                          // await driver.createTestTable();
+                  //   ),
+                  // ),
 
-                          DataService ds = DataService();
-                          ds.signInWithServer(Get.find<AuthController>().user.value);
-                          // void myFunc() {
-                          //   print("This is the function execution");
-                          // }
+                  // child: FlatButton(
+                  //     onPressed: () async {
+                  //       // DbDriver driver = DbDriver();
+                  //       // await driver.initialize();
+                  //       // await driver.createTestTable();
 
-                          // var mylogfunc = Logger.logBefore(
-                          //     log: LogLoggin("userId"),
-                          //     logMsg: "Custom msg",
-                          //     f: myFunc);
-                          // print("Starting function");
-                          // mylogfunc()();
-                          // print("End function");
-                        },
-                        child: Text("asd")),
-                    // height: 20,
-                    // width: 20,
-                    // child: CricularProgressBar(
-                    //   progress: 40,
-                    // ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          offset: Offset(4, 8),
-                          blurRadius: 23,
-                          spreadRadius: -9,
-                          color: Colors.black87,
-                        )
-                      ],
-                    ),
-                  ),
+                  //       DataService ds = DataService();
+                  //       ds.signInWithServer(Get.find<AuthController>().user.value);
+                  //       // void myFunc() {
+                  //       //   print("This is the function execution");
+                  //       // }
+
+                  //       // var mylogfunc = Logger.logBefore(
+                  //       //     log: LogLoggin("userId"),
+                  //       //     logMsg: "Custom msg",
+                  //       //     f: myFunc);
+                  //       // print("Starting function");
+                  //       // mylogfunc()();
+                  //       // print("End function");
+                  //     },
+                  //     child: Text("asd")),
+                  // height: 20,
+                  // width: 20,
+                  // child: CricularProgressBar(
+                  //   progress: 40,
+                  // ),
+                  // decoration: BoxDecoration(
+                  //   borderRadius: BorderRadius.circular(100),
+                  //   color: Colors.white,
+                  //   boxShadow: [
+                  //     BoxShadow(
+                  //       offset: Offset(4, 8),
+                  //       blurRadius: 23,
+                  //       spreadRadius: -9,
+                  //       color: Colors.black87,
+                  //     )
+                  //   ],
+                  // ),
 
                   // circleButton(
                   //   icon: Icon(Icons.supervised_user_circle_rounded),
@@ -128,70 +204,7 @@ class HomeView extends GetView<HomeController> {
                       ),
                     ),
                   ),
-                  PopupMenuButton<PopUpSelection>(
-                    onSelected: (PopUpSelection selection) {
-                      switch (selection) {
-                        case PopUpSelection.Logout:
-                          signOut();
-                          break;
-                        case PopUpSelection.ThemeChange:
-                          if (Get.isDarkMode) {
-                            Get.changeTheme(ThemeData.light());
-                          } else {
-                            Get.changeTheme(ThemeData.dark());
-                          }
-                          break;
-                        default:
-                      }
-                    },
-                    onCanceled: () {},
-                    itemBuilder: (_) {
-                      return [
-                        PopupMenuItem(
-                          value: PopUpSelection.ThemeChange,
-                          child: Row(
-                            children: [
-                              Icon(FontAwesomeIcons.solidSun),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Get.isDarkMode
-                                    ? Text("Light Theme")
-                                    : Text("Dark Theme"),
-                              ),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: PopUpSelection.Logout,
-                          child: Row(
-                            children: [
-                              Icon(Icons.logout),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Text("Logout"),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ];
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        boxShadow: [
-                          BoxShadow(
-                            offset: Offset(4, 8),
-                            blurRadius: 23,
-                            spreadRadius: -9,
-                            color: Colors.black87,
-                          )
-                        ],
-                      ),
-                      child: Icon(Icons.menu),
-                      width: 44,
-                      height: 44,
-                    ),
-                  ),
+
                   // circleButton(
                   //   icon: Icon(Icons.logout, color: Colors.red),
                   //   // onPressed: signOut,

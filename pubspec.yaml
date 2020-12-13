@@ -27,7 +27,7 @@ dependencies:
   youtube_player_flutter: ^7.0.0+7
   better_player: ^0.0.36
   flutter_vlc_player: ^4.0.2
-  # cached_network_image:
+  cached_network_image:
   flutter_image: ^3.0.0
 
 
