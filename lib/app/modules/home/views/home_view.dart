@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:organicnom/app/controllers/controllers/auth_controller.dart';
 import 'package:organicnom/app/modules/home/controllers/home_controller.dart';
 import 'package:organicnom/app/routes/app_pages.dart';
+import 'package:organicnom/app/views/views/logo_view.dart';
 import 'package:organicnom/app/views/views/video_container_view.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../../../views/views/circular_progressbar.dart';
@@ -41,7 +42,6 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Colors.white,
         actions: [
           PopupMenuButton<PopUpSelection>(
             onSelected: (PopUpSelection selection) {
@@ -91,184 +91,98 @@ class HomeView extends GetView<HomeController> {
               ];
             },
             child: Container(
-              child: CircleAvatar(
-                radius: 20,
-                // child:
-                backgroundImage: CachedNetworkImageProvider(
-                  Get.find<AuthController>().user.value.photo,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CircleAvatar(
+                  radius: 20,
+                  // child:
+                  backgroundImage: CachedNetworkImageProvider(
+                    Get.find<AuthController>().user.value.photo,
+                  ),
                 ),
               ),
             ),
-
-            //  Container(
-            //   decoration: BoxDecoration(
-            //     borderRadius: BorderRadius.circular(100),
-            //     boxShadow: [
-            //       BoxShadow(
-            //         offset: Offset(4, 8),
-            //         blurRadius: 23,
-            //         spreadRadius: -9,
-            //         color: Colors.black87,
-            //       )
-            //     ],
-            //   ),
-            //   child: Icon(Icons.menu),
-            //   width: 44,
-            //   height: 44,
-            // ),
           ),
         ],
         elevation: 0,
       ),
-      // backgroundColor: Colors.white,
       body: SafeArea(
-        child: ListView(
-          physics: BouncingScrollPhysics(),
+        child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 36),
-              child: Row(
+            Expanded(
+              child: ListView(
+                physics: BouncingScrollPhysics(),
                 children: [
-                  // child: FittedBox(
-                  // fit: BoxFit.fill,
-                  //   child: Image.network(
-                  //     Get.find<AuthController>().user.value.photo,
-                  //     // cacheHeight: 20,
-                  //     // cacheWidth: 20,
-                  //     errorBuilder: (context, obj, stack) {
-                  //       return Icon(Icons.supervised_user_circle);
-                  //     },
-                  //   ),
-                  // ),
-                  // child: Image(
-                  //   image: NetworkImageWithRetry(
-                  //     Get.find<AuthController>().user.value.photo,
-
-                  //   ),
-                  // ),
-
-                  // child: FlatButton(
-                  //     onPressed: () async {
-                  //       // DbDriver driver = DbDriver();
-                  //       // await driver.initialize();
-                  //       // await driver.createTestTable();
-
-                  //       DataService ds = DataService();
-                  //       ds.signInWithServer(Get.find<AuthController>().user.value);
-                  //       // void myFunc() {
-                  //       //   print("This is the function execution");
-                  //       // }
-
-                  //       // var mylogfunc = Logger.logBefore(
-                  //       //     log: LogLoggin("userId"),
-                  //       //     logMsg: "Custom msg",
-                  //       //     f: myFunc);
-                  //       // print("Starting function");
-                  //       // mylogfunc()();
-                  //       // print("End function");
-                  //     },
-                  //     child: Text("asd")),
-                  // height: 20,
-                  // width: 20,
-                  // child: CricularProgressBar(
-                  //   progress: 40,
-                  // ),
-                  // decoration: BoxDecoration(
-                  //   borderRadius: BorderRadius.circular(100),
-                  //   color: Colors.white,
-                  //   boxShadow: [
-                  //     BoxShadow(
-                  //       offset: Offset(4, 8),
-                  //       blurRadius: 23,
-                  //       spreadRadius: -9,
-                  //       color: Colors.black87,
-                  //     )
-                  //   ],
-                  // ),
-
-                  // circleButton(
-                  //   icon: Icon(Icons.supervised_user_circle_rounded),
-                  // ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 16),
-                      child: Center(
-                        child: Text(
-                          Get.find<AuthController>().user.value.name,
-                          style: GoogleFonts.overpass(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.deepOrange,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 36),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 16),
+                            child: Center(
+                              child: Text(
+                                Get.find<AuthController>().user.value.name,
+                                style: GoogleFonts.overpass(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.orange),
+                              ),
+                            ),
                           ),
                         ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 18, vertical: 36),
+                    child: Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          mainButton(
+                              progress: 21,
+                              label: "Lessons",
+                              iconData: FontAwesomeIcons.bookOpen,
+                              onClick: toLessons),
+                          mainButton(
+                              progress: 46,
+                              label: "Exercises",
+                              iconData: FontAwesomeIcons.pen,
+                              onClick: toExercises),
+                        ],
                       ),
                     ),
                   ),
-
-                  // circleButton(
-                  //   icon: Icon(Icons.logout, color: Colors.red),
-                  //   // onPressed: signOut,
-                  // ),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: VideoContainerView(
+                          // child: Be,
+                          )
+                      // YoutubePlayer(
+                      //     controller: controller.youtubePlayerController,
+                      //     showVideoProgressIndicator: true,
+                      //     onReady: () {
+                      //       controller.youtubePlayerController.addListener(() {});
+                      //     },
+                      //   ),
+                      //  YoutubePlayerBuilder(
+                      //   builder: (context,player){
+                      //     return Column(
+                      //       children: [
+                      //         player
+                      //       ],
+                      //     );
+                      //   },
+                      //   player:
+                      // ),
+                      ),
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 36),
-              child: Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    mainButton(
-                        progress: 21,
-                        label: "Lessons",
-                        iconData: FontAwesomeIcons.bookOpen,
-                        onClick: toLessons),
-                    mainButton(
-                        progress: 46,
-                        label: "Exercises",
-                        iconData: FontAwesomeIcons.pen,
-                        onClick: toExercises),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: VideoContainerView(
-                    // child: Be,
-                    )
-                // YoutubePlayer(
-                //     controller: controller.youtubePlayerController,
-                //     showVideoProgressIndicator: true,
-                //     onReady: () {
-                //       controller.youtubePlayerController.addListener(() {});
-                //     },
-                //   ),
-                //  YoutubePlayerBuilder(
-                //   builder: (context,player){
-                //     return Column(
-                //       children: [
-                //         player
-                //       ],
-                //     );
-                //   },
-                //   player:
-                // ),
-                ),
-            Container(
-              child: Align(
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Text(
-                    "by AmilaGuru(pvt) Ltd.",
-                    style: GoogleFonts.overpass(
-                        fontWeight: FontWeight.w900, fontSize: 24),
-                  ),
-                ),
-                alignment: Alignment.bottomCenter,
-              ),
-              // color: Colors.red,
-            ),
+            Align(alignment: Alignment.bottomCenter, child: LogoView()),
           ],
         ),
       ),
@@ -308,23 +222,6 @@ class HomeView extends GetView<HomeController> {
       ],
     );
   }
-
-  //  ClipPath(
-  //               clipper: OuterClipper(),
-  //               child: Container(
-  //                 color: Colors.deepOrange,
-  //                 width: Get.width,
-  //                 height: Get.height,
-  //               ),
-  //             ),
-  //             ClipPath(
-  //               clipper: InnerClipper(),
-  //               child: Container(
-  //                 color: Colors.deepOrangeAccent,
-  //                 width: Get.width,
-  //                 height: Get.height,
-  //               ),
-  //             ),
 
   Widget circleButton({@required Icon icon, Function onPressed}) {
     return InkWell(
@@ -399,18 +296,3 @@ class InnerClipper extends CustomClipper<Path> {
     return false;
   }
 }
-
-// import 'package:flutter/material.dart';
-
-// class HomeView extends StatelessWidget {
-
-//   @override
-//   Widget build(BuildContext context) {
-//    return Scaffold(
-//       body: Container(child: Center(child:Text(
-//         "asdasd"
-//       )),
-//     ));
-//   }
-
-// }

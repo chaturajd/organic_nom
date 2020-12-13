@@ -28,8 +28,6 @@ class AuthController extends GetxController {
   Future<void> siginIn()async{
     await _signInWithGoogle();
     serverUserStatus.bindStream(_dataService.signInWithServer(user.value));
-    
-
   }
 
   Future<void> _signInWithGoogle() async {

@@ -12,13 +12,17 @@ class RemoteDataServer implements IDataServer {
 
   final DbDriver driver;
 
-  @override
-  Future<List<Exercise>> getAllExercises({int active = 0}) async {
+  Future<void> checkConnectivity() async {
     ConnectivityResult connectivity =
         await (Connectivity().checkConnectivity());
     if (connectivity == ConnectivityResult.none) {
       throw NoInternet();
     }
+  }
+
+  @override
+  Future<List<Exercise>> getAllExercises({int active = 0}) async {
+    await checkConnectivity();
 
     // var results = await driver.select(tableName, ["*"]);
     const String query = "SELECT * FROM apps_videos WHERE type='M' ";
@@ -53,6 +57,7 @@ class RemoteDataServer implements IDataServer {
 
   @override
   Future<List<Lesson>> getAllLessons({int active}) async {
+    await checkConnectivity();
     print("Pulling data from remote server");
     const String query = " SELECT * FROM apps_videos WHERE type='L';";
     var results = await driver.rawSelect(query);
@@ -86,6 +91,8 @@ class RemoteDataServer implements IDataServer {
   Future<bool> getPurchaseStatus({String userId}) async {
     assert(userId != null);
 
+    await checkConnectivity();
+
     String query =
         "SELECT * FROM ${tables.table_purchaseDetails} WHERE ${tables.col_purchaseDetails_appId} = 1 AND ${tables.col_purchaseDetails_userId} = $userId";
     ConnectivityResult connectivity =
@@ -101,32 +108,31 @@ class RemoteDataServer implements IDataServer {
     return result;
   }
 
-  Future<User> getUserByOauthId(String oauthId)async {
+  Future<User> getUserByOauthId(String oauthId) async {
+    await checkConnectivity();
     var rawuser = await driver.rawSelect(
-      "SELECT * FROM ${tables.table_users} WHERE ${tables.col_users_oauthId}='$oauthId' ;"
-    );
+        "SELECT * FROM ${tables.table_users} WHERE ${tables.col_users_oauthId}='$oauthId' ;");
 
-    if(rawuser.length < 1)
-      return null;
+    if (rawuser == null) throw DbDriverError();
+
+    if (rawuser.length < 1) return null;
 
     // print("USER FETCHED ${rawuser.single.fields}");
-    var fields = rawuser.single.fields;  
+    var fields = rawuser.single.fields;
 
     User user = User(
-      oauthProvider: fields["oauth_provider"],
-      oauthUid: fields["oauth_uid"],
-      firstName: fields["first_name"],
-      lastName: fields["last_name"],
-      email: fields["email"],
-      locale: fields["locale"],
-      id: fields["id"]
-    );
-    
-    return Future.value(user);
+        oauthProvider: fields["oauth_provider"],
+        oauthUid: fields["oauth_uid"],
+        firstName: fields["first_name"],
+        lastName: fields["last_name"],
+        email: fields["email"],
+        locale: fields["locale"],
+        id: fields["id"]);
 
+    return Future.value(user);
   }
 
-  addUser(User user)async {
+  addUser(User user) async {
     String query = """
     INSERT INTO `users`
     (`oauth_provider`, `oauth_uid`, `first_name`, `last_name`,
@@ -140,7 +146,7 @@ class RemoteDataServer implements IDataServer {
     NOW(), 'user', '0', '', '', '', '', '0', '1', '1', '0', '1', '0', '1', '1', '1');
     """;
 
-    var result  = await driver.rawInsert(query);
+    var result = await driver.rawInsert(query);
     print("adduser result $result");
   }
 

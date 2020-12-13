@@ -143,6 +143,7 @@ class ExerciseView extends GetView<ExerciseController> {
                     placeholder: CircularProgressIndicator(),
                     options: [],
                   ),
+                ),
 
                   // Obx(
                   //   () {
@@ -159,7 +160,6 @@ class ExerciseView extends GetView<ExerciseController> {
                   //     }
                   //   },
                   // ),
-                ),
               ],
             ),
           ),

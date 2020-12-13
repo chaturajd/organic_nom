@@ -173,8 +173,14 @@ class DataService {
 
   Stream<ServerSigninStatus> signInWithServer(fbuser) async* {
     yield ServerSigninStatus.Signingin;
+    var user;
+    try {
+      user = await rdserver.getUserByOauthId(fbuser.id);
+    } on DbDriverError {
+      yield ServerSigninStatus.Failed;
+      return;
+    }
 
-    var user = await rdserver.getUserByOauthId(fbuser.id);
     if (user == null) {
       yield ServerSigninStatus.Registering;
       String name = fbuser.name;
