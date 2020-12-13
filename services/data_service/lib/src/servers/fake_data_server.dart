@@ -28,7 +28,7 @@ class FakeDataServer implements IDataServer {
   }
 
   @override
-  Future<List<Exercise>> getAllExercise({int active}) {
+  Future<List<Exercise>> getAllExercises({int active}) {
     return Future.value(List<Exercise>.generate(100, (index) {
       return Exercise(
           title: "Exercise ${index + 1}",
@@ -44,5 +44,22 @@ class FakeDataServer implements IDataServer {
           isLocked: index <= active ? false : true,
           id: index);
     }));
+  }
+
+  @override
+  Future<bool> getPurchaseStatus({String userId}) {
+    return Future.value(true);
+  }
+
+  @override
+  Future<int> getActiveExerciseId() {
+    // TODO: implement getActiveExerciseId
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<int> getActiveLessonId() {
+    // TODO: implement getActiveLessonId
+    throw UnimplementedError();
   }
 }

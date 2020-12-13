@@ -57,6 +57,34 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0-nullsafety.3"
+  connectivity:
+    dependency: transitive
+    description:
+      name: connectivity
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.2"
+  connectivity_for_web:
+    dependency: transitive
+    description:
+      name: connectivity_for_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.1+4"
+  connectivity_macos:
+    dependency: transitive
+    description:
+      name: connectivity_macos
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0+7"
+  connectivity_platform_interface:
+    dependency: transitive
+    description:
+      name: connectivity_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.6"
   convert:
     dependency: transitive
     description:
@@ -181,6 +209,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  flutter_image:
+    dependency: "direct main"
+    description:
+      name: flutter_image
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   flutter_inappwebview:
     dependency: transitive
     description:
@@ -443,6 +478,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.5"
+  rupa_box:
+    dependency: "direct main"
+    description:
+      path: "services/rupa_box"
+      relative: true
+    source: path
+    version: "1.0.0"
   sky_engine:
     dependency: transitive
     description: flutter

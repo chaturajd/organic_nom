@@ -12,4 +12,6 @@ Clarifications
     - App resources last updated date/time
     - What kind of question are there gonna be in app (MCQ/Sructured ...)
     - Answer set for MCQs
-    - 
+
+Assumption
+    - Databse returns items in same order

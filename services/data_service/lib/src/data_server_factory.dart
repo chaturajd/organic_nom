@@ -1,5 +1,6 @@
 import 'package:data_service/src/data_server.dart';
 import 'package:data_service/src/server_types.dart';
+import 'package:data_service/src/util/cache/cache.dart';
 import 'package:db_driver/db_driver.dart';
 
 import 'servers/dataservers.dart';
@@ -10,8 +11,8 @@ class DataServerFactory {
       case ServerType.fake:
         return FakeDataServer();
         break;
-      case ServerType.local:
-        return null;
+      case ServerType.cache:
+        return Cache();
         break;
       case ServerType.remote:
         return RemoteDataServer(DbDriver());

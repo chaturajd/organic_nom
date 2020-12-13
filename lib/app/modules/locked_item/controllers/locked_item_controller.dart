@@ -1,3 +1,4 @@
+import 'package:data_service/data_service.dart';
 import 'package:get/get.dart';
 
 class LockedItemController extends GetxController {
@@ -15,4 +16,8 @@ class LockedItemController extends GetxController {
   void onClose() {}
 
   void increment() => count.value++;
+
+  void clearCachedPaymentDetails()async{
+    await DataService()..clearCachedPurchaseDetails();
+  }
 }

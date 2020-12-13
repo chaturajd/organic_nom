@@ -47,7 +47,11 @@ class DbDriver {
   }
 
   Future<dynamic> terminateConnection() async {
-    _conn.close();
+    try{
+      _conn.close();
+    }catch (e){
+      print("DBDRIVER :: connectioin could not close");
+    }
   }
 
   // Future<void> select({
@@ -65,7 +69,19 @@ class DbDriver {
     } catch (e) {
       print("Database Driver : Error : $e");
     }
+    // Results results;
+    // results.
     terminateConnection();
+  }
+
+  rawInsert(String query) async{
+    await initialize();
+    try{
+       return await _conn.query(query);
+    }
+    catch(e){
+      print("Database Driver : Error (rawUpdate): $e");
+    }
   }
 
   ///Incomplete implementation -- Do not use

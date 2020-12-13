@@ -1,6 +1,7 @@
 import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:organicnom/app/modules/exercises/exercise/controllers/exercise_controller.dart';
@@ -9,6 +10,7 @@ import 'package:organicnom/app/views/views/badge_view.dart';
 import 'package:organicnom/app/views/views/page_title_view.dart';
 import 'package:organicnom/app/views/views/subtitle_view.dart';
 import 'package:organicnom/app/views/views/video_container_view.dart';
+import 'package:rupa_box/rupa_box.dart';
 
 class ExerciseView extends GetView<ExerciseController> {
   ExerciseView(this.controller) {
@@ -33,17 +35,18 @@ class ExerciseView extends GetView<ExerciseController> {
         return Scaffold(
           appBar: appBar,
           floatingActionButton: FloatingActionButton(
+            child: Icon(
+              FontAwesomeIcons.check,
+            ),
             onPressed: () {
               controller.checkAnswer();
             },
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
+            child: ListView(
+              physics: BouncingScrollPhysics(),
               children: [
-                Obx(() {
-                  return Text(controller.errormsg.value);
-                }),
                 PageTitleView(controller.exercise.title),
                 Center(
                   child: Padding(
@@ -96,70 +99,90 @@ class ExerciseView extends GetView<ExerciseController> {
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
+            child: ListView(
+              physics: BouncingScrollPhysics(),
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Container(child: PageTitleView(controller.exercise.title)),
+                Column(
                   children: [
-                    PageTitleView(controller.exercise.title),
-                    BadgeView(
-                      isCorrect: controller.correctlyAnswered,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SubtitleView("Your Answer"),
+                        BadgeView(
+                          isCorrect: controller.correctlyAnswered,
+                        ),
+                      ],
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          color: Colors.black12,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            controller.getGivenAnswer(),
+                            style: GoogleFonts.overpass(fontSize: 18),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
                 !controller.correctlyAnswered
                     ? Column(
                         children: [
-                          SubtitleView("Your Answer"),
-                          Text("controller.givenAnswer"),
+                          SubtitleView("Correct Answer"),
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6),
+                              color: Colors.black12,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                controller.getCorrectAnswer(),
+                                style: GoogleFonts.overpass(fontSize: 18),
+                              ),
+                            ),
+                          ),
                         ],
                       )
-                    : Container(),
-                Column(
-                  children: [
-                    SubtitleView("Correct Answer"),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                        color: Colors.black12,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          controller.getCorrectAnswer(),
-                          style: GoogleFonts.overpass(fontSize: 18),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                    : SizedBox(),
                 SubtitleView("Explainer"),
                 VideoContainerView(
-                  child: VlcPlayer(
-                    url: "http://192.168.8.109/v.mp4",
-                    aspectRatio: 16/9,
-                    controller: controller.vlcPlayerController,
-                    placeholder: CircularProgressIndicator(),
-                    options: [],
-                  ),
+                    child: RupaBox(
+                  url: "http://192.168.8.109/m.mp4",
+                )
+                    // VlcPlayer(
+                    //   url: "http://192.168.8.109/v.mp4",
+                    //   aspectRatio: 16 / 9,
+                    //   controller: controller.vlcPlayerController,
+                    //   placeholder: Center(child: CircularProgressIndicator()),
+                    //   options: [],
+                    // ),
 
-                  // Obx(
-                  //   () {
-                  //     if (controller.betterPlayerController.value != null) {
-                  //       return AspectRatio(
-                  //         aspectRatio: 16 / 9,
-                  //         child: BetterPlayer(
-                  //           controller: controller.betterPlayerController.value,
-                  //         ),
-                  //       );
-                  //     } else {
-                  //       return Text(
-                  //           controller.hasPlayerInitialized.value.toString());
-                  //     }
-                  //   },
-                  // ),
-                ),
+                    // Obx(
+                    //   () {
+                    //     if (controller.betterPlayerController.value != null) {
+                    //       return AspectRatio(
+                    //         aspectRatio: 16 / 9,
+                    //         child: BetterPlayer(
+                    //           controller: controller.betterPlayerController.value,
+                    //         ),
+                    //       );
+                    //     } else {
+                    //       return Text(
+                    //           controller.hasPlayerInitialized.value.toString());
+                    //     }
+                    //   },
+                    // ),
+                    ),
               ],
             ),
           ),
@@ -170,14 +193,14 @@ class ExerciseView extends GetView<ExerciseController> {
 }
 
 class Answer extends StatelessWidget {
-  const Answer(
-      {Key key,
-      @required this.answer,
-      @required this.id,
-      this.color = Colors.white,
-      this.textColor = Colors.white,
-      this.onTap})
-      : super(key: key);
+  const Answer({
+    Key key,
+    @required this.answer,
+    @required this.id,
+    this.color = Colors.white,
+    this.textColor = Colors.white,
+    this.onTap,
+  }) : super(key: key);
 
   final String answer;
   final int id;

@@ -11,6 +11,9 @@ class ExerciseController extends GetxController {
 
   RxInt selectedAnswer = 0.obs;
 
+  int maxTries = 2;
+  int tries = 1 ;
+
   RxBool isAnswered = false.obs;
   bool correctlyAnswered = false;
 
@@ -91,13 +94,21 @@ class ExerciseController extends GetxController {
     if (selectedAnswer.value == exercise.correctAnswer) {
       isAnswered.value = true;
       correctlyAnswered = true;
-    } else {
-      Get.snackbar("Wrong", "Correct Answer : ${exercise.correctAnswer}");
+    } else if(tries >= maxTries ) {
+      isAnswered.value =true;
+      correctlyAnswered = false;
+    }else if( tries < maxTries){
+      tries++;
+      Get.snackbar("Wrong", "Try Again");
     }
   }
 
   String getCorrectAnswer() {
     return exercise.answers[exercise.correctAnswer];
+  }
+
+  String getGivenAnswer(){
+    return exercise.answers[selectedAnswer.value];
   }
 
   void changeSelection(selectionId) {

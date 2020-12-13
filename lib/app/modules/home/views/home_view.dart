@@ -1,6 +1,7 @@
 import 'package:data_service/data_service.dart';
 import 'package:db_driver/db_driver.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image/network.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,12 +10,18 @@ import 'package:organicnom/app/modules/home/controllers/home_controller.dart';
 import 'package:organicnom/app/routes/app_pages.dart';
 import 'package:organicnom/app/views/views/video_container_view.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import '../../../views/views/circular_progressbar.dart';
 
 enum PopUpSelection { Logout, ThemeChange }
 
 class HomeView extends GetView<HomeController> {
   HomeView() {
     Get.put(HomeController());
+    Logger.log(
+      log: LogSignIn(
+        Get.find<AuthController>().user.value.id,
+      ),
+    );
   }
 
   void signOut() {
@@ -38,7 +45,8 @@ class HomeView extends GetView<HomeController> {
       ),
       // backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
+        child: ListView(
+          physics: BouncingScrollPhysics(),
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 36),
@@ -56,16 +64,38 @@ class HomeView extends GetView<HomeController> {
                     //     },
                     //   ),
                     // ),
+                    // child: Image(
+                    //   image: NetworkImageWithRetry(
+                    //     Get.find<AuthController>().user.value.photo,
+
+                    //   ),
+                    // ),
                     child: FlatButton(
                         onPressed: () async {
                           // DbDriver driver = DbDriver();
                           // await driver.initialize();
                           // await driver.createTestTable();
 
-                          // DataService ds = DataService();
-                          // ds.testrdserver();
+                          DataService ds = DataService();
+                          ds.signInWithServer(Get.find<AuthController>().user.value);
+                          // void myFunc() {
+                          //   print("This is the function execution");
+                          // }
+
+                          // var mylogfunc = Logger.logBefore(
+                          //     log: LogLoggin("userId"),
+                          //     logMsg: "Custom msg",
+                          //     f: myFunc);
+                          // print("Starting function");
+                          // mylogfunc()();
+                          // print("End function");
                         },
                         child: Text("asd")),
+                    // height: 20,
+                    // width: 20,
+                    // child: CricularProgressBar(
+                    //   progress: 40,
+                    // ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
                       color: Colors.white,
@@ -176,10 +206,12 @@ class HomeView extends GetView<HomeController> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     mainButton(
+                        progress: 21,
                         label: "Lessons",
                         iconData: FontAwesomeIcons.bookOpen,
                         onClick: toLessons),
                     mainButton(
+                        progress: 46,
                         label: "Exercises",
                         iconData: FontAwesomeIcons.pen,
                         onClick: toExercises),
@@ -210,21 +242,19 @@ class HomeView extends GetView<HomeController> {
                 //   player:
                 // ),
                 ),
-            Expanded(
-              child: Container(
-                child: Align(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Text(
-                      "by AmilaGuru(pvt) Ltd.",
-                      style: GoogleFonts.overpass(
-                          fontWeight: FontWeight.w900, fontSize: 24),
-                    ),
+            Container(
+              child: Align(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Text(
+                    "by AmilaGuru(pvt) Ltd.",
+                    style: GoogleFonts.overpass(
+                        fontWeight: FontWeight.w900, fontSize: 24),
                   ),
-                  alignment: Alignment.bottomCenter,
                 ),
-                // color: Colors.red,
+                alignment: Alignment.bottomCenter,
               ),
+              // color: Colors.red,
             ),
           ],
         ),
@@ -233,18 +263,24 @@ class HomeView extends GetView<HomeController> {
   }
 
   Column mainButton(
-      {@required String label, @required IconData iconData, Function onClick}) {
+      {@required String label,
+      @required IconData iconData,
+      Function onClick,
+      double progress}) {
     return Column(
       children: [
-        InkWell(
-          onTap: () => onClick(),
-          child: CircleAvatar(
-            radius: 64,
-            backgroundColor: Colors.amber[400],
-            child: Icon(
-              iconData,
-              size: 48,
-              color: Colors.white,
+        CricularProgressBar(
+          progress: progress,
+          child: InkWell(
+            onTap: () => onClick(),
+            child: CircleAvatar(
+              radius: 64,
+              backgroundColor: Colors.orange,
+              child: Icon(
+                iconData,
+                size: 48,
+                color: Colors.white,
+              ),
             ),
           ),
         ),

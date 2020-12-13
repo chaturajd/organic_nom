@@ -1,3 +1,4 @@
+import 'package:data_service/data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:organicnom/app/controllers/controllers/auth_controller.dart';
@@ -13,7 +14,7 @@ class Root extends GetWidget<AuthController> {
     // return SigninView();
     return Obx(() {
       print("ROOT USER STATE :: ${_controller.user.value}");
-      return _controller.user.value != null
+      return _controller.user.value != null && _controller.serverUserStatus.value == ServerSigninStatus.Success
           ? 
           // Get.toNamed('/home')
           HomeView()

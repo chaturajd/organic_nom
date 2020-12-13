@@ -14,10 +14,9 @@ void main() async {
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      
     ),
   );
-  
+
   // DbDriver testDriver = DbDriver ();
   // testDriver.initialize();
   // testDriver.createTestTable();

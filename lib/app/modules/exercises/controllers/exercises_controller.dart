@@ -118,16 +118,21 @@ class ExercisesController extends GetxController {
               return exercise;
             },
           ).toList();
-          print("ExercisesController :: Upadated list ${updatedExercises.length}");
+          print(
+              "ExercisesController :: Upadated list ${updatedExercises.length}");
           // exercises.value = updatedExercises;
           exercises.assignAll(updatedExercises);
-          DataService()..updateActiveExercisePointer(current);
+          await DataService()..updateActiveExercisePointer(nextId);
           print("ExercisesController :: Unlocked : ${exercises.length}");
+
+          Logger.log(log: LogExerciseUnlocked(nextId));
+
           await Get.to(
             ExerciseView(ExerciseController(exercises[current])),
           );
         } else {
-          print("ExercisesController :: You should complete previous exercise to unlock");
+          print(
+              "ExercisesController :: You should complete previous exercise to unlock");
           await Get.to(
             ExerciseView(ExerciseController(next)),
             arguments: LockedStatus.Incompleted,
@@ -153,18 +158,19 @@ class ExercisesController extends GetxController {
   }
 
   Future<void> refreshExercisesList() async {
-    final ds = DataService();
-    int loadedAcitve = await ds.getActiveExerciseId();
-    active = loadedAcitve.obs;
+    try {
+      final ds = DataService();
+      int loadedAcitve = await ds.getActiveExerciseId();
+      active = loadedAcitve.obs;
+      print("EXercieseController :: ACTIVE  ${active.value}");
+      final loadedExercises = await ds.getAllExercises();
 
-    final loadedExercises = await ds.getAllExercises();
-
-    if (exercises == null) {
-      exercises = loadedExercises.obs;
-    } else {
-      exercises.assignAll(loadedExercises.obs);
-    }
-    print("refreshed exercises list : ${exercises.length}");
+      if (exercises == null) {
+        exercises = loadedExercises.obs;
+      } else {
+        exercises.assignAll(loadedExercises.obs);
+      }
+    } catch (e) {}
   }
 
   @override

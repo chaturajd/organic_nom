@@ -51,7 +51,8 @@ class Video {
       correctAnswer: int.tryParse(this.answer),
       title: this.titleEng,
       titleSinhala: this.titleSin,
-      videoUrl: this.url,
+      // videoUrl: this.url,
+      videoUrl: "http://192.168.8.109/m.mp4",
       isCompleted: isCompleted,
       isLocked: isLocked,
     );

@@ -8,8 +8,7 @@ import 'package:payment_service/payment_service.dart';
 
 class LockedItemView extends GetView<LockedItemController> {
   final appBar = AppBar(
-    leading: BackButton(
-    ),
+    leading: BackButton(),
     elevation: 0,
   );
 
@@ -33,6 +32,7 @@ class LockedItemView extends GetView<LockedItemController> {
               ),
               FlatButton(
                 onPressed: () async {
+                  controller.clearCachedPaymentDetails();
                   final user = Get.find<AuthController>().user.value;
                   final ph = PayHerePayment(
                       email: user.email, name: user.name, userId: user.id);
@@ -41,9 +41,10 @@ class LockedItemView extends GetView<LockedItemController> {
                 child: Container(
                   decoration: BoxDecoration(color: Colors.orange, boxShadow: [
                     BoxShadow(
-                        blurRadius: 2,
-                        offset: Offset(2, 6),
-                        color: Colors.black12,)
+                      blurRadius: 2,
+                      offset: Offset(2, 6),
+                      color: Colors.black12,
+                    )
                   ]),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(

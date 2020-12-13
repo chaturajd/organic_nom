@@ -23,9 +23,10 @@ class LessonsView extends GetView<LessonsController> {
               PageTitleView('Lessons'),
               Expanded(
                 child: Obx(
-                  () => !controller.loaded.value
+                  () => !controller.loaded.value || controller.lessons == null
                       ? Center(
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               CircularProgressIndicator(),
                               Text(

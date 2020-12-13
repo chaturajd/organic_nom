@@ -10,7 +10,7 @@ class SigninView extends GetView<AuthController> {
   Widget build(BuildContext context) {
     Widget googleSignInButton() {
       return InkWell(
-        onTap: () => controller.signInWithGoogle(),
+        onTap: () => controller.siginIn(),
         child: Container(
           decoration: BoxDecoration(
             boxShadow: [

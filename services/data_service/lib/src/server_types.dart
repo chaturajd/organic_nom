@@ -1,5 +1,5 @@
 enum ServerType{
   fake,
   remote,
-  local
+  cache
 }

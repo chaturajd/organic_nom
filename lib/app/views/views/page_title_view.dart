@@ -16,6 +16,7 @@ class PageTitleView extends GetView {
           alignment: Alignment.centerLeft,
           child: Text(
             title,
+            overflow: TextOverflow.visible,
             style: GoogleFonts.overpass(
               fontWeight: FontWeight.bold,
               fontSize: 32,

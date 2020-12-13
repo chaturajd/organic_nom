@@ -1,14 +1,35 @@
+import 'package:hive/hive.dart';
+
+part 'exercise.g.dart';
+
+@HiveType(typeId: 20)
 class Exercise {
-  final int id;
-  final int dbId;
-  final String title;
-  final String titleSinhala;
-  final String description;
-  final String videoUrl;
-  final int correctAnswer;
-  final Map<int, String> answers;
-  final bool isCompleted;
-  final bool isLocked;
+  @HiveField(0)
+  int id;
+
+  @HiveField(1)
+  int dbId;
+
+  @HiveField(2)
+  String title;
+
+  @HiveField(3)
+  String titleSinhala;
+
+  @HiveField(4)
+  String description;
+
+  @HiveField(5)
+  String videoUrl;
+
+  @HiveField(6)
+  int correctAnswer;
+
+  @HiveField(7)
+  Map<int, String> answers;
+
+  bool isCompleted;
+  bool isLocked;
 
   Exercise({
     this.id,
@@ -22,6 +43,7 @@ class Exercise {
     this.correctAnswer,
     this.isLocked = true,
   });
+
 }
 
 // class UnlockedExercise extends Exercise {

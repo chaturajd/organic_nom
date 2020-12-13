@@ -11,8 +11,7 @@ class ExercisesView extends GetView<ExercisesController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(
-        ),
+        leading: BackButton(),
         elevation: 0,
       ),
       body: Padding(
@@ -24,9 +23,11 @@ class ExercisesView extends GetView<ExercisesController> {
               child: Obx(
                 () {
                   print("Building exercises list");
-                  return !controller.loaded.value
+                  return !controller.loaded.value ||
+                          controller.exercises.value == null
                       ? Center(
                           child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             CircularProgressIndicator(),
                             Text(
@@ -57,16 +58,15 @@ class ExercisesView extends GetView<ExercisesController> {
                                     : () {
                                         controller.gotoExercise(index);
                                       },
-                                child:
-                                    // Text(controller.exercises[index].title)
-                                    ListItemView(
+                                child: ListItemView(
                                   index: index,
                                   description: exercise.description,
-                                  title:
-                                      "${exercise.title} Answer : ${exercise.correctAnswer} status :${exercise.isLocked.toString()}",
+                                  title: "${exercise.title}",
+                                  // "${exercise.title} Locked : ${exercise.isLocked}, Completed : ${exercise.isCompleted} ",
                                   isCompleted: exercise.isCompleted,
-                                  isActive:
-                                      index == controller.active.value ?? true,
+                                  isActive: index == controller.active.value
+                                      ? true
+                                      : false,
                                   isLocked: exercise.isLocked,
                                 ),
                               );

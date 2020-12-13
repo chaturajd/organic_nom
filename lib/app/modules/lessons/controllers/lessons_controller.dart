@@ -34,18 +34,36 @@ class LessonsController extends GetxController {
   }
 
   Future<void> refreshLessonsList() async {
-    final ds = DataService();
-    int loadedActive = await ds.getActiveLessonId();
-    active = loadedActive.obs;
+    try {
+      final ds = DataService();
+      int loadedActive = await ds.getActiveLessonId();
+      active = loadedActive.obs;
 
-    final loadedLessons = await ds.getAllLessons();
+      final loadedLessons = await ds.getAllLessons();
 
-    if (lessons == null) {
-      lessons = loadedLessons.obs;
-    } else {
-      lessons.assignAll(loadedLessons);
-    }
+      if (lessons == null) {
+        lessons = loadedLessons.obs;
+      } else {
+        lessons.assignAll(loadedLessons);
+      }
+    } catch (e) {}
   }
+
+  //   final ds = DataService();
+  // int loadedActive = await ds.getActiveLessonId();
+  // active = loadedActive.obs;
+
+  // var loadedLessons;
+  // try {
+  //   loadedLessons = await ds.getAllLessons();
+  //   if (lessons == null) {
+  //     lessons = loadedLessons.obs;
+  //   } else {
+  //     lessons.assignAll(loadedLessons);
+  //   }
+  // } on NoInternet {
+  //   print("No Internet");
+  // }
 
   void next() async {
     current++;
@@ -88,7 +106,8 @@ class LessonsController extends GetxController {
           }).toList();
 
           lessons.assignAll(updatedLessons);
-          await DataService()..updateActiveLessonPointer(current);
+          await DataService()
+            ..updateActiveLessonPointer(current);
 
           print("Lesson list Updated");
 
