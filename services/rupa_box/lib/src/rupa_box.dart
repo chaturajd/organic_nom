@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
-import 'dart:typed_data';
+
+import 'package:rupa_box/src/fullscreen_rupa_box.dart';
 
 class RupaBox extends StatefulWidget {
-  RupaBox({Key key, this.url}) : super(key: key);
+  RupaBox(this.url,{Key key,this.controller,this.playPosition = 0 }) : super(key: key);
 
   final String url;
+  final int playPosition;
+  final VlcPlayerController controller;
 
   @override
   _RupaBoxState createState() => _RupaBoxState();
@@ -53,6 +56,7 @@ class _RupaBoxState extends State<RupaBox> {
             duration = oDuration.toString().split('.')[0];
           }
 
+          // vlcPlayerController.setTime(widget.playPosition);
           sliderValue = vlcPlayerController.position.inSeconds.toDouble();
 
           switch (vlcPlayerController.playingState) {
@@ -93,24 +97,26 @@ class _RupaBoxState extends State<RupaBox> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 300,
+      // height: 300,
       child: Stack(
         children: [
-          VlcPlayer(
-            aspectRatio: 16 / 9,
-            url: widget.url,
-            controller: vlcPlayerController,
-            options: [
-              '--quiet',
-            ],
-            hwAcc: HwAcc.DISABLED,
-            placeholder: Container(
-                height: 300, child: Center(child: Text("Loading ... "))
-                //  Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [CircularProgressIndicator()],
-                // ),
-                ),
+          Center(
+            child: VlcPlayer(
+              aspectRatio: 16 / 9,
+              url: widget.url,
+              controller: vlcPlayerController,
+              options: [
+                '--quiet',
+              ],
+              hwAcc: HwAcc.DISABLED,
+              placeholder: Container(
+                   child: Center(child: Text("Loading ... "))
+                  //  Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [CircularProgressIndicator()],
+                  // ),
+                  ),
+            ),
           ),
           Container(
             color: Colors.transparent,
@@ -139,6 +145,18 @@ class _RupaBoxState extends State<RupaBox> {
               ) : Container(),
             ),
           ),
+          IconButton(icon: Icon(Icons.fullscreen), onPressed: ()async{
+            setState(() {
+              vlcPlayerController.stop();
+            });
+            var watchDetails = Navigator.push(context, MaterialPageRoute(builder: (context){
+              return FullScreenRupaBox(widget.url,playPosition: vlcPlayerController.position.inMilliseconds,);
+            }));
+            vlcPlayerController.dispose();
+            await watchDetails;
+            // if(w)
+            
+          })
         ],
       ),
     );

@@ -10,6 +10,7 @@ import 'package:organicnom/app/views/views/page_title_view.dart';
 import 'package:organicnom/app/views/views/subtitle_view.dart';
 import 'package:organicnom/app/views/views/video_container_view.dart';
 import 'package:organicnom/app/views/views/video_player.dart';
+import 'package:rupa_box/rupa_box.dart';
 
 class ExerciseView extends GetView<ExerciseController> {
   ExerciseView(this.controller) {
@@ -40,7 +41,7 @@ class ExerciseView extends GetView<ExerciseController> {
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
+            child: ListView(
               children: [
                 Obx(() {
                   return Text(controller.errormsg.value);
@@ -97,25 +98,37 @@ class ExerciseView extends GetView<ExerciseController> {
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
+            child: ListView(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                PageTitleView(controller.exercise.title),
+                Column(
                   children: [
-                    PageTitleView(controller.exercise.title),
-                    BadgeView(
-                      isCorrect: controller.correctlyAnswered,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SubtitleView("Correct Answ  Fer"),
+                        BadgeView(
+                          isCorrect: controller.correctlyAnswered,
+                        ),
+                      ],
+                    ),
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color: Colors.black12,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          controller.getGivenAnswer(),
+                          style: GoogleFonts.overpass(fontSize: 18),
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                !controller.correctlyAnswered
-                    ? Column(
-                        children: [
-                          SubtitleView("Your Answer"),
-                          Text("controller.givenAnswer"),
-                        ],
-                      )
-                    : Container(),
                 Column(
                   children: [
                     SubtitleView("Correct Answer"),
@@ -137,33 +150,35 @@ class ExerciseView extends GetView<ExerciseController> {
                 ),
                 SubtitleView("Explainer"),
                 VideoContainerView(
-                  child: 
-                  VideoPlayer("http://192.168.8.109/a.mp4"),
-                  
-                  // VlcPlayer(
-                  //   url: "http://192.168.8.109/a.mp4",
-                  //   aspectRatio: 16/9,
-                  //   controller: controller.vlcPlayerController,
-                  //   placeholder: CircularProgressIndicator(),
-                  //   options: [],
-                  // ),
-                ),
+                    child:
+                        // VideoPlayer("http://192.168.8.109/a.mp4"),
+                        RupaBox("http://192.168.8.109/a.mp4")
 
-                  // Obx(
-                  //   () {
-                  //     if (controller.betterPlayerController.value != null) {
-                  //       return AspectRatio(
-                  //         aspectRatio: 16 / 9,
-                  //         child: BetterPlayer(
-                  //           controller: controller.betterPlayerController.value,
-                  //         ),
-                  //       );
-                  //     } else {
-                  //       return Text(
-                  //           controller.hasPlayerInitialized.value.toString());
-                  //     }
-                  //   },
-                  // ),
+                    // VlcPlayer(
+                    //   url: "http://192.168.8.109/a.mp4",
+                    //   aspectRatio: 16/9,
+                    //   controller: controller.vlcPlayerController,
+                    //   placeholder: CircularProgressIndicator(),
+                    //   options: [],
+                    // ),
+                    ),
+
+                // Obx(
+                //   () {
+                //     if (controller.betterPlayerController.value != null) {
+                //       return AspectRatio(
+                //         aspectRatio: 16 / 9,
+                //         child: BetterPlayer(
+                //           controller: controller.betterPlayerController.value,
+                //         ),
+                //       );
+                //     } else {
+                //       return Text(
+                //           controller.hasPlayerInitialized.value.toString());
+                //     }
+                //   },
+                // ),
+                SizedBox(height: 80,),
               ],
             ),
           ),
