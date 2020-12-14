@@ -1,1 +1,1 @@
-enum ServerSigninStatus { Pending ,Signingin, Failed, Success,Registering,SavingToCache }
+enum ServerSigninStatus { Pending ,Signingin, Failed, Success,Registering,SavingToCache,WaitingForOauthProvider }

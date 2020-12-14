@@ -12,8 +12,8 @@ import '../exceptions.dart';
 class Cache implements IDataServer {
   @override
   Future<List<Exercise>> getAllExercises({int active}) async {
-    await _isCacheUptoDate(boxes.exercisesInfo);
-
+    if(await _isCacheUptoDate(boxes.exercisesInfo))
+{
     if (!Hive.isBoxOpen(boxes.exercises)) await Hive.openBox(boxes.exercises);
     Box _box = Hive.box(boxes.exercises);
 
@@ -44,7 +44,9 @@ class Cache implements IDataServer {
     }).toList();
 
     print("CACHE :: Pulled exercises from cache ${exercises.length}");
-    return Future.value(exercises);
+    return Future.value(exercises);}else{
+      throw TooOldBox;
+    }
   }
 
   Future<void> saveExercises(List<Exercise> exercises) async {
@@ -60,37 +62,39 @@ class Cache implements IDataServer {
 
   @override
   Future<List<Lesson>> getAllLessons({int active}) async {
-    await _isCacheUptoDate(boxes.lessonsInfo);
+    if (await _isCacheUptoDate(boxes.lessonsInfo)) {
+      if (!Hive.isBoxOpen(boxes.lessons)) await Hive.openBox(boxes.lessons);
+      Box _box = Hive.box(boxes.lessons);
 
-    if (!Hive.isBoxOpen(boxes.lessons)) await Hive.openBox(boxes.lessons);
-    Box _box = Hive.box(boxes.lessons);
+      var fromBox = _box.values.toList();
 
-    var fromBox = _box.values.toList();
+      List<Lesson> lessons = fromBox.map((lesson) {
+        return Lesson(
+          dbId: lesson.dbId,
+          description: lesson.description,
+          id: lesson.id,
+          title: lesson.title,
+          titleSinhala: lesson.titleSinhala,
+          videoUrl: lesson.videoUrl,
+          isLocked: lesson.id == active
+              ? false
+              : lesson.id > active
+                  ? true
+                  : false,
+          isCompleted: lesson.id == active
+              ? false
+              : lesson.id > active
+                  ? false
+                  : true,
+        );
+      }).toList();
 
-    List<Lesson> lessons = fromBox.map((lesson) {
-      return Lesson(
-        dbId: lesson.dbId,
-        description: lesson.description,
-        id: lesson.id,
-        title: lesson.title,
-        titleSinhala: lesson.titleSinhala,
-        videoUrl: lesson.videoUrl,
-        isLocked: lesson.id == active
-            ? false
-            : lesson.id > active
-                ? true
-                : false,
-        isCompleted: lesson.id == active
-            ? false
-            : lesson.id > active
-                ? false
-                : true,
-      );
-    }).toList();
+      print("CACHE :: Pulled lessons from cache ${lessons.length}");
 
-    print("CACHE :: Pulled lessons from cache ${lessons.length}");
-
-    return Future.value(lessons);
+      return Future.value(lessons);
+    }else{
+      throw TooOldBox;
+    }
   }
 
   Future<void> saveLessons(List<Lesson> lessons) async {
@@ -132,7 +136,8 @@ class Cache implements IDataServer {
 
   @override
   Future<bool> getPurchaseStatus({String userId}) async {
-    if (!Hive.isBoxOpen(boxes.purchaseDetails)) await Hive.openBox(boxes.purchaseDetails);
+    if (!Hive.isBoxOpen(boxes.purchaseDetails))
+      await Hive.openBox(boxes.purchaseDetails);
     Box _box = Hive.box(boxes.purchaseDetails);
 
     try {
@@ -157,7 +162,8 @@ class Cache implements IDataServer {
   // }
 
   Future<void> clearPurchaseDetais() async {
-    if (!Hive.isBoxOpen(boxes.purchaseDetails)) await Hive.openBox(boxes.purchaseDetails);
+    if (!Hive.isBoxOpen(boxes.purchaseDetails))
+      await Hive.openBox(boxes.purchaseDetails);
     Box _box = Hive.box(boxes.purchaseDetails);
 
     _box.clear();

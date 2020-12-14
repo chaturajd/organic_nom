@@ -60,21 +60,22 @@ class DataService {
     try {
       lessons =
           await defaultServer.getAllLessons(active: await getActiveLessonId());
-    } on TooOldBox {
+
+      print("DataServer:: failed to fetch from default server");
+      return lessons;
+    } catch (e) {
       try {
+        print("DataServer:: Trying to fetch from seondary server");
+
         lessons = await secondaryServer.getAllLessons(
             active: await getActiveLessonId());
         updateCachedLessons(lessons);
+
+        return lessons;
       } catch (e) {
         throw e;
       }
-    } on EmptyBox {
-      print("DATASERVICE :: EMPTY BOX - lessons ");
     }
-
-    if (defaultServer is RemoteDataServer) cacheServer.saveLessons(lessons);
-
-    return lessons;
   }
 
   ///Get all exercises.
@@ -84,7 +85,8 @@ class DataService {
     try {
       exercises = await defaultServer.getAllExercises(
           active: await getActiveExerciseId());
-    } on TooOldBox {
+      return exercises;
+    } catch (e) {
       try {
         exercises = await secondaryServer.getAllExercises(
             active: await getActiveLessonId());
@@ -95,8 +97,6 @@ class DataService {
       } catch (e) {
         print("DataService :: error : $e");
       }
-    } on EmptyBox {
-      print("DATASERVICE :: EMPTY BOX - exercises ");
     }
 
     if (defaultServer is RemoteDataServer) cacheServer.saveExercises(exercises);
@@ -173,6 +173,7 @@ class DataService {
 
   Stream<ServerSigninStatus> signInWithServer(fbuser) async* {
     yield ServerSigninStatus.Signingin;
+    if (fbuser == null) yield ServerSigninStatus.WaitingForOauthProvider;
     var user;
     try {
       user = await rdserver.getUserByOauthId(fbuser.id);
@@ -214,14 +215,14 @@ class DataService {
     print("Getting Purchase details");
     bool status;
     try {
-      status = await cacheServer.getPurchaseStatus();
+      status = await defaultServer.getPurchaseStatus();
       print("Shaala la la");
       print(status);
       return status;
     } catch (e) {
       print("Trying to get from server");
       try {
-        status = await rdserver.getPurchaseStatus();
+        status = await secondaryServer.getPurchaseStatus();
         print("Saving to cache");
 
         cacheServer.updatePurchaseDetails(status);

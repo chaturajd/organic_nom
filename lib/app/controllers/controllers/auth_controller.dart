@@ -9,7 +9,8 @@ class AuthController extends GetxController {
   final dataService.Logger logger = dataService.Logger();
 
   Rx<User> user = Rx<User>();
-  Rx<dataService.ServerSigninStatus> serverUserStatus = dataService.ServerSigninStatus.Pending.obs;
+  Rx<dataService.ServerSigninStatus> serverUserStatus =
+      dataService.ServerSigninStatus.Pending.obs;
 
   // Rx<GoogleSignInStatus> signInStatus = GoogleSignInStatus.Initializing.obs;
   @override
@@ -17,15 +18,13 @@ class AuthController extends GetxController {
     user.bindStream(_authService.user);
     // signInStatus.bindStream(_authService.signInWithGoogle());
     // String userId = user.value.id == null ? '': user.value.id.toString();
-    try{
-      siginIn();
-    }catch(e){
-      print("Auto sign in failed");
-    }
+    if (user.value != null)
+      serverUserStatus.bindStream(_dataService.signInWithServer(user.value));
+
     super.onInit();
   }
 
-  Future<void> siginIn()async{
+  Future<void> siginIn() async {
     await _signInWithGoogle();
     serverUserStatus.bindStream(_dataService.signInWithServer(user.value));
   }

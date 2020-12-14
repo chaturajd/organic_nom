@@ -121,15 +121,15 @@ class HomeView extends GetView<HomeController> {
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(left: 16),
-                            child: Center(
-                              child: Text(
-                                Get.find<AuthController>().user.value.name,
-                                style: GoogleFonts.overpass(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.orange),
-                              ),
-                            ),
+                            // child: Center(
+                            //   child: Text(
+                            //     Get.find<AuthController>().user.value.name,
+                            //     style: GoogleFonts.overpass(
+                            //         fontSize: 24,
+                            //         fontWeight: FontWeight.bold,
+                            //         color: Colors.orange),
+                            //   ),
+                            // ),
                           ),
                         ),
                       ],

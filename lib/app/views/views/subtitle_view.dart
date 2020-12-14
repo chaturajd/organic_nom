@@ -8,7 +8,7 @@ class SubtitleView extends GetView {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 40),
+      padding: const EdgeInsets.only(top: 20,bottom: 16),
       child: Container(
         child: Align(
           alignment: Alignment.centerLeft,

@@ -62,20 +62,7 @@ class SigninView extends GetView<AuthController> {
     return Scaffold(
       // backgroundColor: Colors.white ,
       body: Obx(() {
-        if (controller.serverUserStatus.value != ServerSigninStatus.Failed) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("Signing in. Please wait"),
-                ),
-              ],
-            ),
-          );
-        } else
+        if (controller.serverUserStatus.value == ServerSigninStatus.Pending) {
           return Column(
             // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -121,14 +108,26 @@ class SigninView extends GetView<AuthController> {
                   controller.serverUserStatus.value == ServerSigninStatus.Failed
                       ? "Sign in failed, Click sign in button to retry"
                       : "",
-                  style: GoogleFonts.overpass(fontSize: 12, color: Colors.white30),
+                  style:
+                      GoogleFonts.overpass(fontSize: 12, color: Colors.white30),
                 ),
               ),
-              Expanded(
-                child: LogoView()
-              )
+              Expanded(child: LogoView())
             ],
           );
+        } else {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Signing in. Please wait"),
+                ),
+              ],
+            ),
+          );}
       }),
     );
   }

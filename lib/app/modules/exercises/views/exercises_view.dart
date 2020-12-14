@@ -24,6 +24,7 @@ class ExercisesView extends GetView<ExercisesController> {
                 () {
                   print("Building exercises list");
                   return !controller.loaded.value ||
+                          // ignore: invalid_use_of_protected_member
                           controller.exercises.value == null
                       ? Center(
                           child: Column(

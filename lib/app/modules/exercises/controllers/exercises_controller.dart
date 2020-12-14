@@ -159,11 +159,10 @@ class ExercisesController extends GetxController {
 
   @override
   void onInit() async {
-    await refreshExercisesList().then(
-      (_) => loaded.value = true,
-    );
-
     super.onInit();
+    await refreshExercisesList();
+    loaded.value = true;
+
   }
 
   Future<void> refreshExercisesList() async {

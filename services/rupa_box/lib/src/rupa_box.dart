@@ -32,9 +32,11 @@ class _RupaBoxState extends State<RupaBox> {
   @override
   void initState() {
     vlcPlayerController = VlcPlayerController(onInit: () {
+      vlcPlayerController.setTime(Duration(seconds: 60).inMilliseconds);
       vlcPlayerController.play();
       print("Rupa Box :: Initializing");
-    });
+    },
+    );
 
     vlcPlayerController.addListener(
       () {
@@ -102,6 +104,7 @@ class _RupaBoxState extends State<RupaBox> {
         children: [
           Center(
             child: VlcPlayer(
+
               aspectRatio: 16 / 9,
               url: widget.url,
               controller: vlcPlayerController,

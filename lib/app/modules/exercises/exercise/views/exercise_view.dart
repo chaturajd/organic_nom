@@ -107,7 +107,7 @@ class ExerciseView extends GetView<ExerciseController> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SubtitleView("Correct Answ  Fer"),
+                        SubtitleView("Your Answer"),
                         BadgeView(
                           isCorrect: controller.correctlyAnswered,
                         ),

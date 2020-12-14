@@ -1,0 +1,1 @@
+enum WatchStatus{complete, incomplete}
