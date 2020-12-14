@@ -76,8 +76,15 @@ class LessonsController extends GetxController {
     } else if (next.isLocked) {
       final ds = DataService();
 
-      final bool hasPurchased =
-          await ds.getPurchaseStatus(Get.find<AuthController>().user.value.id);
+      bool hasPurchased = false;
+      try {
+        hasPurchased = await ds
+            .getPurchaseStatus(Get.find<AuthController>().user.value.id);
+      } catch (e) {
+        print("Nope, no internet");
+        Get.snackbar("No Internet", "Could not connect to internet");
+        return;
+      }
 
       final bool isPreviousCompleted = true;
 

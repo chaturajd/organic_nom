@@ -27,3 +27,5 @@ const String lessonsInfo = "lessonsInfo";
 const String exercisesInfo = "exercisesInfo";
 
 const String userdetails ="userdetails";
+
+const String purchaseDetails = "purchasedetails";

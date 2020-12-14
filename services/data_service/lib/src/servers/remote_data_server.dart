@@ -89,9 +89,14 @@ class RemoteDataServer implements IDataServer {
 
   @override
   Future<bool> getPurchaseStatus({String userId}) async {
-    assert(userId != null);
+    return true;
+    try {
+      await checkConnectivity();
+    } catch (e) {
+      rethrow;
+    }
 
-    await checkConnectivity();
+    assert(userId != null);
 
     String query =
         "SELECT * FROM ${tables.table_purchaseDetails} WHERE ${tables.col_purchaseDetails_appId} = 1 AND ${tables.col_purchaseDetails_userId} = $userId";

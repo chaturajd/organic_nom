@@ -211,17 +211,25 @@ class DataService {
 
   ///Returns true if user has purchased, false otherwise
   Future<bool> getPurchaseStatus(String id) async {
-    // return true;
+    print("Getting Purchase details");
     bool status;
     try {
       status = await cacheServer.getPurchaseStatus();
+      print("Shaala la la");
+      print(status);
       return status;
-    } on TooOldBox {
+    } catch (e) {
+      print("Trying to get from server");
       try {
         status = await rdserver.getPurchaseStatus();
+        print("Saving to cache");
+
+        cacheServer.updatePurchaseDetails(status);
+        print("PURCHASE STATUS :: $status");
         return status;
-      } on NoInternet {
-        print("DATA SERVER :: Could not fetch purchase details not internet");
+      } catch (e) {
+        print("DATA SERVER :: Could not fetch purchase details no internet");
+        throw NoInternet();
       }
     }
 
@@ -231,11 +239,11 @@ class DataService {
 
   ///Set the purchase status of the user,
   ///Default will set user purchased
-  Future<void> setPurchaseStatus(String userId, {bool purchased = true}) async {
-    final box = await Hive.openBox(boxes.varData);
-    box.put("purchased", purchased);
-    print("purchase state updated");
-  }
+  // Future<void> setPurchaseStatus(String userId, {bool purchased = true}) async {
+  //   final box = await Hive.openBox(boxes.varData);
+  //   box.put("purchased", purchased);
+  //   print("purchase state updated");
+  // }
 
   Future<void> clearCachedPurchaseDetails() async {
     await cacheServer.clearPurchaseDetais();

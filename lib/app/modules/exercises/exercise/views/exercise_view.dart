@@ -9,6 +9,7 @@ import 'package:organicnom/app/views/views/badge_view.dart';
 import 'package:organicnom/app/views/views/page_title_view.dart';
 import 'package:organicnom/app/views/views/subtitle_view.dart';
 import 'package:organicnom/app/views/views/video_container_view.dart';
+import 'package:organicnom/app/views/views/video_player.dart';
 
 class ExerciseView extends GetView<ExerciseController> {
   ExerciseView(this.controller) {
@@ -136,13 +137,16 @@ class ExerciseView extends GetView<ExerciseController> {
                 ),
                 SubtitleView("Explainer"),
                 VideoContainerView(
-                  child: VlcPlayer(
-                    url: "http://192.168.8.109/v.mp4",
-                    aspectRatio: 16/9,
-                    controller: controller.vlcPlayerController,
-                    placeholder: CircularProgressIndicator(),
-                    options: [],
-                  ),
+                  child: 
+                  VideoPlayer("http://192.168.8.109/a.mp4"),
+                  
+                  // VlcPlayer(
+                  //   url: "http://192.168.8.109/a.mp4",
+                  //   aspectRatio: 16/9,
+                  //   controller: controller.vlcPlayerController,
+                  //   placeholder: CircularProgressIndicator(),
+                  //   options: [],
+                  // ),
                 ),
 
                   // Obx(

@@ -1,1 +1,1 @@
-enum PaymentStatus { Pending, Completed, Failed, Canceled ,Unknown}
+enum PaymentStatus { Initial, Pending, Success, Failed, Canceled ,Unknown}

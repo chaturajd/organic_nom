@@ -7,6 +7,10 @@ import 'package:organicnom/app/modules/locked_item/controllers/locked_item_contr
 import 'package:payment_service/payment_service.dart';
 
 class LockedItemView extends GetView<LockedItemController> {
+  LockedItemView(){
+    Get.put(LockedItemController());
+  }
+  
   final appBar = AppBar(
     leading: BackButton(),
     elevation: 0,
@@ -31,12 +35,13 @@ class LockedItemView extends GetView<LockedItemController> {
                 height: 48,
               ),
               FlatButton(
-                onPressed: () async {
-                  controller.clearCachedPaymentDetails();
-                  final user = Get.find<AuthController>().user.value;
-                  final ph = PayHerePayment(
-                      email: user.email, name: user.name, userId: user.id);
-                  await ph.pay();
+                onPressed: () {
+                  controller.startPayment();
+                  // controller.clearCachedPaymentDetails();
+                  // final user = Get.find<AuthController>().user.value;
+                  // final ph = PayHerePayment(
+                  //     email: user.email, name: user.name, userId: user.id);
+                  // await ph.pay();
                 },
                 child: Container(
                   decoration: BoxDecoration(color: Colors.orange, boxShadow: [

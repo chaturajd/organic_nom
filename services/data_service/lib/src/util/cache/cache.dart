@@ -124,40 +124,50 @@ class Cache implements IDataServer {
 
     if ((DateTime.now().difference(lastUpdated)).inSeconds >
         validity.inSeconds) {
-      print("CACHE :: lessons data is too old");
-      throw TooOldBox();
+      print("CACHE :: data is too old");
+      return false;
     }
-    return Future.value(true);
+    return true;
   }
 
   @override
-  Future<bool> getPurchaseStatus({String userId})  async  {
-    if (!Hive.isBoxOpen(boxes.varData)) await Hive.openBox(boxes.varData);
-    Box _box = Hive.box(boxes.varData);
+  Future<bool> getPurchaseStatus({String userId}) async {
+    if (!Hive.isBoxOpen(boxes.purchaseDetails)) await Hive.openBox(boxes.purchaseDetails);
+    Box _box = Hive.box(boxes.purchaseDetails);
 
-    _isCacheUptoDate(boxes.varData, dateKey: keys.purchaseStatusUpdatedAt);
-    return _box.get(keys.purchaseStatus, defaultValue: false);
+    try {
+      if (await _isCacheUptoDate(boxes.purchaseDetails,
+          dateKey: keys.purchaseStatusUpdatedAt)) {
+        return _box.get(keys.hasPurchased, defaultValue: false);
+      } else {
+        print("Throwing TooOldBox");
+        throw TooOldBox;
+      }
+    } on TooOldBox {
+      rethrow;
+    }
   }
 
-  Future<void> setPurchaseStatus({bool status = false}) async {
-    if (!Hive.isBoxOpen(boxes.varData)) await Hive.openBox(boxes.varData);
-    Box _box = Hive.box(boxes.varData);
+  // Future<void> setPurchaseStatus({bool status = false}) async {
+  //   if (!Hive.isBoxOpen(boxes.varData)) await Hive.openBox(boxes.varData);
+  //   Box _box = Hive.box(boxes.varData);
 
-    _box.put(keys.purchaseStatus, status);
-    _box.put(keys.purchaseStatusUpdatedAt, DateTime.now());
-  }
+  //   _box.put(keys.purchaseStatus, status);
+  //   _box.put(keys.purchaseStatusUpdatedAt, DateTime.now());
+  // }
 
-  Future<void> clearPurchaseDetais()async{
-    if (!Hive.isBoxOpen(boxes.varData)) await Hive.openBox(boxes.varData);
-    Box _box = Hive.box(boxes.varData);
+  Future<void> clearPurchaseDetais() async {
+    if (!Hive.isBoxOpen(boxes.purchaseDetails)) await Hive.openBox(boxes.purchaseDetails);
+    Box _box = Hive.box(boxes.purchaseDetails);
 
     _box.clear();
 
     print("CACHE :: purchase details cleared");
   }
 
-  updateUserDetails(User user)async{
-    if(!Hive.isBoxOpen(boxes.userdetails)) await Hive.openBox(boxes.userdetails);
+  updateUserDetails(User user) async {
+    if (!Hive.isBoxOpen(boxes.userdetails))
+      await Hive.openBox(boxes.userdetails);
     Box _box = Hive.box(boxes.userdetails);
 
     _box.put(keys.userDetails, user);
@@ -166,14 +176,23 @@ class Cache implements IDataServer {
     print("Cache :: Server User Updated");
   }
 
-  Future<int> getServerUserId()async{
-    if(!Hive.isBoxOpen(boxes.userdetails)) await Hive.openBox(boxes.userdetails);
+  Future<int> getServerUserId() async {
+    if (!Hive.isBoxOpen(boxes.userdetails))
+      await Hive.openBox(boxes.userdetails);
     Box _box = Hive.box(boxes.userdetails);
 
     return (_box.get(keys.userDetails) as User).id;
-    
   }
 
+  void updatePurchaseDetails(bool hasPurchased) async {
+    if (!Hive.isBoxOpen(boxes.purchaseDetails))
+      await Hive.openBox(boxes.purchaseDetails);
+    Box _box = Hive.box(boxes.purchaseDetails);
+
+    await _box.clear();
+    _box.put(keys.lastUpdatedAt, DateTime.now());
+    _box.put(keys.hasPurchased, hasPurchased);
+  }
 
   @override
   Future<int> getActiveExerciseId() {
@@ -187,6 +206,6 @@ class Cache implements IDataServer {
     throw UnimplementedError();
   }
 
-  void updateActiveLessonId(int activeId){}
-  void updateActiveExerciseId(int activeId){}
+  void updateActiveLessonId(int activeId) {}
+  void updateActiveExerciseId(int activeId) {}
 }

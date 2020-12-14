@@ -9,6 +9,9 @@ class PayHerePayment implements Payment {
     @required this.userId,
     @required this.name,
     @required this.email,
+    this.onSuccess,
+    this.onError,
+    this.onDismissed,
   }) {
     this.paymentObject = {
       "sandbox": true,
@@ -34,36 +37,32 @@ class PayHerePayment implements Payment {
     };
   }
 
-  PayHerePayment.purchaseChecker(this.userId,{this.email="",this.name=""});
+  PayHerePayment.purchaseChecker(this.userId,
+      {this.email = "",
+      this.name = "",
+      this.onSuccess,
+      this.onError,
+      this.onDismissed});
 
   final userId;
   final name;
   final email;
   var paymentObject;
 
+  final Function(String paymentId) onSuccess;
+  final Function(String error) onError;
+  final Function onDismissed;
+
   @override
-  Future<PaymentStatus> pay() async {
+  PaymentStatus pay() {
+    PaymentStatus status = PaymentStatus.Pending;
     PayHere.startPayment(
       paymentObject,
-      (paymentId) {
-        print("One Time Payment Success. Payment Id: $paymentId");
-        final ds = DataService();
-        ds.setPurchaseStatus(userId);
-        return Future.value(PaymentStatus.Completed);
-      },
-      (error) {
-        print("One Time Payment Failed. Error: $error");
-        return Future.value(PaymentStatus.Failed);
-      },
-      () {
-        print("One Time Payment Dismissed");
-        return Future.value(PaymentStatus.Canceled);
-      },
+      (paymentId) => onSuccess(paymentId),
+      (error) => onError(error),
+      onDismissed(),
     );
-    return Future.value(PaymentStatus.Unknown);
-  }
-
-  Future<bool> checkPurchaseStatus() {
-    return Future.delayed(Duration(microseconds: 20), () => true);
+    print("Payment Cycle done");
+    return status;
   }
 }

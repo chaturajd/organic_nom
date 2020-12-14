@@ -1,4 +1,5 @@
 import 'package:data_service/data_service.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:organicnom/app/controllers/controllers/auth_controller.dart';
 import 'package:organicnom/app/modules/exercises/exercise/controllers/exercise_controller.dart';
@@ -82,8 +83,15 @@ class ExercisesController extends GetxController {
 
       final ds = DataService();
 
-      final bool hasPurchased =
-          await ds.getPurchaseStatus(Get.find<AuthController>().user.value.id);
+      bool hasPurchased = false;
+      try {
+        hasPurchased = await ds
+            .getPurchaseStatus(Get.find<AuthController>().user.value.id);
+      } on NoInternet {
+        Get.snackbar("No Internet", "Could not connect to internet",
+            duration: Duration(seconds: 4));
+        return;
+      }
 
       final bool isPreviousCompleted = true;
 
@@ -122,7 +130,8 @@ class ExercisesController extends GetxController {
               "ExercisesController :: Upadated list ${updatedExercises.length}");
           // exercises.value = updatedExercises;
           exercises.assignAll(updatedExercises);
-          await DataService()..updateActiveExercisePointer(nextId);
+          await DataService()
+            ..updateActiveExercisePointer(nextId);
           print("ExercisesController :: Unlocked : ${exercises.length}");
 
           Logger.log(log: LogExerciseUnlocked(nextId));
