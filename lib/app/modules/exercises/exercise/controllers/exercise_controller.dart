@@ -1,17 +1,15 @@
 import 'package:data_service/data_service.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:get/get.dart';
 import 'package:organicnom/app/modules/exercises/controllers/exercises_controller.dart';
 
 class ExerciseController extends GetxController {
   final Exercise exercise;
-  final count = 0.obs;
 
   RxInt selectedAnswer = 0.obs;
 
   int maxTries = 2;
-  int tries = 1 ;
+  int tries = 1;
 
   RxBool isAnswered = false.obs;
   bool correctlyAnswered = false;
@@ -22,21 +20,10 @@ class ExerciseController extends GetxController {
   VlcPlayerController vlcPlayerController;
 
   ExerciseController(this.exercise) {
-
     vlcPlayerController = VlcPlayerController(onInit: () {
       vlcPlayerController.play();
     });
-
-    exercise.printme();
   }
-
-  @override
-  void onReady() {}
-
-  @override
-  void onClose() {}
-
-  void increment() => count.value++;
 
   void checkAnswer() {
     if (selectedAnswer.value == null ||
@@ -49,10 +36,10 @@ class ExerciseController extends GetxController {
     if (selectedAnswer.value == exercise.correctAnswer) {
       isAnswered.value = true;
       correctlyAnswered = true;
-    } else if(tries >= maxTries ) {
-      isAnswered.value =true;
+    } else if (tries >= maxTries) {
+      isAnswered.value = true;
       correctlyAnswered = false;
-    }else if( tries < maxTries){
+    } else if (tries < maxTries) {
       tries++;
       Get.snackbar("Wrong", "Try Again");
     }
@@ -62,7 +49,7 @@ class ExerciseController extends GetxController {
     return exercise.answers[exercise.correctAnswer];
   }
 
-  String getGivenAnswer(){
+  String getGivenAnswer() {
     return exercise.answers[selectedAnswer.value];
   }
 

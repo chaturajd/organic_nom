@@ -2,15 +2,13 @@ import 'package:data_service/data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:organicnom/app/controllers/controllers/auth_controller.dart';
 import 'package:organicnom/app/modules/locked_item/controllers/locked_item_controller.dart';
-import 'package:payment_service/payment_service.dart';
 
 class LockedItemView extends GetView<LockedItemController> {
-  LockedItemView(){
+  LockedItemView() {
     Get.put(LockedItemController());
   }
-  
+
   final appBar = AppBar(
     leading: BackButton(),
     elevation: 0,
@@ -37,11 +35,6 @@ class LockedItemView extends GetView<LockedItemController> {
               FlatButton(
                 onPressed: () {
                   controller.startPayment();
-                  // controller.clearCachedPaymentDetails();
-                  // final user = Get.find<AuthController>().user.value;
-                  // final ph = PayHerePayment(
-                  //     email: user.email, name: user.name, userId: user.id);
-                  // await ph.pay();
                 },
                 child: Container(
                   decoration: BoxDecoration(color: Colors.orange, boxShadow: [
@@ -80,6 +73,10 @@ class LockedItemView extends GetView<LockedItemController> {
       );
     }
     return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(),
+        elevation: 0,
+      ),
       body: Center(
         child: Text("Sorry this item is locked "),
       ),

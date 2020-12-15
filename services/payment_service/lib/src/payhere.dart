@@ -1,4 +1,3 @@
-import 'package:data_service/data_service.dart';
 import 'package:payhere_mobilesdk_flutter/payhere_mobilesdk_flutter.dart';
 import 'package:meta/meta.dart';
 import 'package:payment_service/src/payment_status.dart';

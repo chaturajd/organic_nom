@@ -1,8 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:data_service/data_service.dart';
-import 'package:db_driver/db_driver.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image/network.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -174,15 +171,6 @@ class HomeView extends GetView<HomeController> {
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(left: 16),
-                            // child: Center(
-                            //   child: Text(
-                            //     Get.find<AuthController>().user.value.name,
-                            //     style: GoogleFonts.overpass(
-                            //         fontSize: 24,
-                            //         fontWeight: FontWeight.bold,
-                            //         color: Colors.orange),
-                            //   ),
-                            // ),
                           ),
                         ),
                       ],
@@ -219,34 +207,12 @@ class HomeView extends GetView<HomeController> {
                       child: Obx(
                         () => VideoContainerView(
                           child: YoutubePlayer(
-                            // controller: YoutubePlayerController(initialVideoId: "_MbexTzJjBE"),
                             controller:
                                 controller.youtubePlayerController.value,
                             bottomActions: [],
                           ),
-                          // child: Be,
                         ),
-                      )
-                      // iLnmTe5Q2Qw
-                      // https://youtu.be/_MbexTzJjBE
-                      // YoutubePlayer(
-                      //     controller: controller.youtubePlayerController,
-                      //     showVideoProgressIndicator: true,
-                      //     onReady: () {
-                      //       controller.youtubePlayerController.addListener(() {});
-                      //     },
-                      //   ),
-                      //  YoutubePlayerBuilder(
-                      //   builder: (context,player){
-                      //     return Column(
-                      //       children: [
-                      //         player
-                      //       ],
-                      //     );
-                      //   },
-                      //   player:
-                      // ),
-                      ),
+                      )),
                 ],
               ),
             ),
@@ -255,56 +221,5 @@ class HomeView extends GetView<HomeController> {
         ),
       ),
     );
-  }
-}
-
-class OuterClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-
-    path.moveTo(size.width / 2, 0);
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height / 4);
-    path.cubicTo(
-      size.width * 0.55,
-      size.height * 0.16,
-      size.width * 0.85,
-      size.height * 0.05,
-      size.width / 2,
-      0,
-    );
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return false;
-    // throw UnimplementedError();
-  }
-}
-
-class InnerClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-
-    path.moveTo(size.width / 0.75, 0);
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height * 0.1);
-
-    path.quadraticBezierTo(
-      size.width * 0.8,
-      size.height * 0.11,
-      size.width,
-      0,
-    );
-
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return false;
   }
 }

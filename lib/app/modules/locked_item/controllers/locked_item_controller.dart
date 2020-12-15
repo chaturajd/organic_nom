@@ -4,21 +4,10 @@ import 'package:organicnom/app/controllers/controllers/auth_controller.dart';
 import 'package:payment_service/payment_service.dart';
 
 class LockedItemController extends GetxController {
-  //TODO: Implement LockedItemController
-
-  final count = 0.obs;
   Rx<PaymentStatus> status = PaymentStatus.Initial.obs;
 
   @override
-  void onInit() {}
-
-  @override
-  void onReady() {}
-
-  @override
   void onClose() {}
-
-  void increment() => count.value++;
 
   void clearCachedPaymentDetails() async {
     DataService ds = DataService();

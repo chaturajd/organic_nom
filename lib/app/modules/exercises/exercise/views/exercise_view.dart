@@ -11,25 +11,78 @@ import 'package:organicnom/app/views/views/video_container_view.dart';
 import 'package:rupa_box/rupa_box.dart';
 
 class ExerciseView extends StatelessWidget {
-  ExerciseView(this.controller) {
-    print("EXERCISEVIEW CONST_ isLocked ${controller.exercise.videoUrl}");
-    controller.exercise.printme();
-  }
-
-  final ExerciseController controller;
+  ExerciseView(this.controller);
 
   final appBar = AppBar(
     leading: BackButton(),
     elevation: 0,
   );
 
+  final ExerciseController controller;
+
+  Widget exerciseImage(String url) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+            color: Colors.black12,
+          ),
+          child: CachedNetworkImage(
+            imageUrl: url == null ? "" : url,
+            placeholder: (context, s) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+            errorWidget: (context, s, d) {
+              return Center(
+                child: Text("Failed to load image"),
+              );
+            },
+          ),
+          // Icon(Icons.image),
+          width: double.infinity,
+          height: 300,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (controller.exercise.isLocked) {
       return LockedItemView();
     }
+    var answersList = Container(child: Obx(
+      () {
+        List<Widget> answers =
+            controller.exercise.answers.entries.map((answer) {
+          return InkWell(
+            onTap: () {
+              controller.changeSelection(answer.key);
+            },
+            child: Answer(
+              id: answer.key,
+              answer: answer.value,
+              color: answer.key == controller.selectedAnswer.value
+                  ? Get.theme.accentColor
+                  : Get.theme.primaryColor,
+              textColor: answer.key == controller.selectedAnswer.value
+                  ? Colors.black
+                  : Colors.white,
+            ),
+          );
+        }).toList();
+        return Column(
+          children: answers,
+        );
+      },
+    ));
 
     return Obx(() {
+      // Exercise View
       if (!controller.isAnswered.value) {
         return Scaffold(
           appBar: appBar,
@@ -42,65 +95,17 @@ class ExerciseView extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ListView(
               children: [
-                // Obx(() {
-                //   return Text(controller.errormsg.value);
-                // }),
                 PageTitleView(controller.exercise.title),
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                        color: Colors.black12,
-                      ),
-                      child: CachedNetworkImage(
-                        imageUrl: controller.exercise.imageUrl == null ? "": controller.exercise.imageUrl,
-                        placeholder: (context,s){
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        },
-                        errorWidget: (context,s,d){
-                          return Center(
-                            child: Text("Failed to load image"),
-                          );
-                        },
-                      ),
-                      // Icon(Icons.image),
-                      width: double.infinity,
-                      height: 300,
-                    ),
-                  ),
-                ),
-                Container(child: Obx(() {
-                  List<Widget> answers =
-                      controller.exercise.answers.entries.map((answer) {
-                    return InkWell(
-                      onTap: () {
-                        controller.changeSelection(answer.key);
-                      },
-                      child: Answer(
-                        id: answer.key,
-                        answer: answer.value,
-                        color: answer.key == controller.selectedAnswer.value
-                            ? Get.theme.accentColor
-                            : Get.theme.primaryColor,
-                        textColor: answer.key == controller.selectedAnswer.value
-                            ? Colors.black
-                            : Colors.white,
-                      ),
-                    );
-                  }).toList();
-                  return Column(
-                    children: answers,
-                  );
-                }))
+                exerciseImage(controller.exercise.imageUrl),
+                answersList,
               ],
             ),
           ),
         );
-      } else {
+      }
+
+      //Explainer View
+      else {
         return Scaffold(
           appBar: appBar,
           floatingActionButton: FloatingActionButton(
@@ -162,38 +167,9 @@ class ExerciseView extends StatelessWidget {
                 ),
                 SubtitleView("Explainer"),
                 VideoContainerView(
-                    child:
-                        // VideoPlayer("http://192.168.8.109/a.mp4"),
-                        // RupaBox("http://192.168.8.109/a.mp4")
-                        RupaBox(controller.exercise.videoUrl)
-
-                    // VlcPlayer(
-                    //   url: "http://192.168.8.109/a.mp4",
-                    //   aspectRatio: 16/9,
-                    //   controller: controller.vlcPlayerController,
-                    //   placeholder: CircularProgressIndicator(),
-                    //   options: [],
-                    // ),
-                    ),
-
-                // Obx(
-                //   () {
-                //     if (controller.betterPlayerController.value != null) {
-                //       return AspectRatio(
-                //         aspectRatio: 16 / 9,
-                //         child: BetterPlayer(
-                //           controller: controller.betterPlayerController.value,
-                //         ),
-                //       );
-                //     } else {
-                //       return Text(
-                //           controller.hasPlayerInitialized.value.toString());
-                //     }
-                //   },
-                // ),
-                SizedBox(
-                  height: 80,
+                  child: RupaBox(controller.exercise.videoUrl),
                 ),
+                SizedBox(height: 80),
               ],
             ),
           ),
@@ -214,10 +190,12 @@ class Answer extends StatelessWidget {
       : super(key: key);
 
   final String answer;
-  final int id;
-  final Function(int) onTap;
   final Color color;
+  final int id;
   final Color textColor;
+
+  final Function(int) onTap;
+
   @override
   Widget build(BuildContext context) {
     return Padding(

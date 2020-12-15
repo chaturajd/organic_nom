@@ -25,5 +25,6 @@ class DataServerFactory {
         break;
       default:
     }
+  return null;
   }
 }

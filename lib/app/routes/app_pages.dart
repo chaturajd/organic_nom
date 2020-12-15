@@ -1,20 +1,11 @@
 import 'package:organicnom/app/modules/locked_item/views/locked_item_view.dart';
 import 'package:organicnom/app/modules/locked_item/bindings/locked_item_binding.dart';
-import 'package:organicnom/app/modules/exercises/locked_exercise/views/locked_exercise_view.dart';
-import 'package:organicnom/app/modules/exercises/locked_exercise/bindings/locked_exercise_binding.dart';
-import 'package:organicnom/app/modules/exercises/exercise/views/exercise_view.dart';
-import 'package:organicnom/app/modules/exercises/exercise/bindings/exercise_binding.dart';
-import 'package:organicnom/app/modules/exercises/explainer/views/explainer_view.dart';
-import 'package:organicnom/app/modules/exercises/explainer/bindings/explainer_binding.dart';
 import 'package:organicnom/app/modules/exercises/views/exercises_view.dart';
 import 'package:organicnom/app/modules/exercises/bindings/exercises_binding.dart';
-import 'package:organicnom/app/modules/lessons/bindings/lesson_binding.dart';
-import 'package:organicnom/app/modules/lessons/views/lesson_view.dart';
 import 'package:organicnom/app/modules/lessons/views/lessons_view.dart';
 import 'package:organicnom/app/modules/lessons/bindings/lessons_binding.dart';
 import 'package:organicnom/app/controllers/bindigs/auth_binding.dart';
 import 'package:organicnom/app/modules/signin/views/signin_view.dart';
-import 'package:organicnom/app/modules/signin/bindings/signin_binding.dart';
 import 'package:organicnom/app/modules/home/views/home_view.dart';
 import 'package:organicnom/app/modules/home/bindings/home_binding.dart';
 import 'package:get/get.dart';
@@ -33,7 +24,6 @@ class AppPages {
     GetPage(
       name: Routes.SIGNIN,
       page: () => SigninView(),
-      binding: SigninBinding(),
     ),
     GetPage(
       name: Routes.ROOT,
@@ -60,21 +50,11 @@ class AppPages {
     //   page: () => ExerciseView(),
     //   binding: ExerciseBinding(),
     // ),
-    GetPage(
-      name: Routes.EXPLAINER, 
-      page:()=> ExplainerView(), 
-      binding: ExplainerBinding(),
-    ),
     // GetPage(
     //   name: Routes.EXERCISE, 
     //   page:()=> ExerciseView(), 
     //   binding: ExerciseBinding(),
     // ),
-    GetPage(
-      name: Routes.LOCKED_EXERCISE, 
-      page:()=> LockedExerciseView(), 
-      binding: LockedExerciseBinding(),
-    ),
     GetPage(
       name: Routes.LOCKED_ITEM, 
       page:()=> LockedItemView(), 

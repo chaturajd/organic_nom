@@ -3,8 +3,8 @@ import 'dart:math';
 
 class CricularProgressBar extends StatefulWidget {
   CricularProgressBar({Key key,this.progress = 60,this.child =const Text("asd",style: TextStyle(color:Colors.red),) }) : super(key: key);
-  double progress;
-  Widget child;
+  final double progress;
+  final Widget child;
   @override
   _CricularProgressBarState createState() => _CricularProgressBarState();
 }

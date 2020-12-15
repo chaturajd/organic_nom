@@ -48,39 +48,13 @@ class Exercise {
   @HiveField(8)
   String imageUrl;
 
-  printme() {
-    print("*********************Exercise*********************");
-    print("id       : ${this.id}");
-    print("dbId     : ${this.dbId}");
-    print("title    : ${this.title}");
-    print("videoUrl : ${this.videoUrl}");
-    print("imageUrl : ${this.imageUrl}");
-    print("Locked   : ${this.isLocked}");
-    print("Completed: ${this.isCompleted}");
-    print("*********************Exercise*********************");
+  void unlock() {
+    this.isLocked = false;
+  }
+
+  void complete() {
+    this.isCompleted = true;
   }
 }
-
-// class UnlockedExercise extends Exercise {
-
-//   UnlockedExercise({
-//     String title,
-//     String description,
-//   }) : super(
-//           title: title,
-//           description: description,
-//         );
-// }
-
-// class LockedExercise extends Exercise {
-//   ///Locked reason i.e. not paid or previous is not colple
-//   final reason;
-
-//   LockedExercise({
-//     this.reason,
-//     String title,
-//     String description,
-//   }) : super(description: description, title: title);
-// }
 
 class NoSuchExercise extends Exercise implements Exception {}

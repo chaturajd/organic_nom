@@ -22,9 +22,8 @@ class Lesson {
   @HiveField(5)
   final String titleSinhala;
 
-
-  final bool isCompleted;
-  final bool isLocked;
+  bool isCompleted;
+  bool isLocked;
 
   Lesson({
     this.id,
@@ -36,6 +35,14 @@ class Lesson {
     this.isLocked = true,
     this.titleSinhala,
   });
+
+  void unlock() {
+    this.isLocked = false;
+  }
+
+  void complete() {
+    this.isCompleted = true;
+  }
 }
 
 class LockedLesson extends Lesson {}

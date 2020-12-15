@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:google_sign_in/google_sign_in.dart';
 import './models/models.dart';
-import 'google_sign_in_status.dart';
 
 class SignInFailure implements Exception {}
 

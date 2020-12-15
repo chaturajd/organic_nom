@@ -7,9 +7,6 @@ class LessonController extends GetxController {
 
   final Lesson lesson;
 
-  // int get current => current;
-  // set current(int value) => current = value;
-
   int current;
 
   void setIndex(index) {
@@ -17,22 +14,9 @@ class LessonController extends GetxController {
   }
 
   @override
-  void onInit() {}
-
-  @override
-  void onReady() {}
-
-  @override
   void onClose() {}
 
   void next() async {
-    // current++;
-    // Get.snackbar("title", "message");
-    // await Get.offAndToNamed(
-    //   '/lessons/lesson',
-    //   arguments: current,
-    // );
-  //  await Get.find<LessonsController>().next(current);
-  Get.find<LessonsController>().next();
+    Get.find<LessonsController>().next();
   }
 }

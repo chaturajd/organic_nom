@@ -18,12 +18,13 @@ import './data_server_factory.dart';
 import './util/exceptions.dart';
 
 class DataService {
-  DataService({this.defaultServer}) {
+  DataService({this.defaultServer, this.secondaryServer}) {
     if (defaultServer == null) {
       // defaultServer = fakeDataServer;
       // defaultServer = rdserver;
-      defaultServer = cacheServer;
-      secondaryServer = rdserver;
+
+      if (this.defaultServer == null) defaultServer = cacheServer;
+      if (this.secondaryServer == null) secondaryServer = rdserver;
     }
 
     getActiveLessonId().then((pointer) {

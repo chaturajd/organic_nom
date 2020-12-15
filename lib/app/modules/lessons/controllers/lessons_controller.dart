@@ -3,16 +3,19 @@ import 'package:data_service/data_service.dart';
 import 'package:organicnom/app/controllers/controllers/auth_controller.dart';
 import 'package:organicnom/app/modules/lessons/controllers/lesson_controller.dart';
 import 'package:organicnom/app/modules/lessons/views/lesson_view.dart';
+import 'package:organicnom/app/modules/locked_item/views/locked_item_view.dart';
 
 class LessonsController extends GetxController {
-  final count = 0.obs;
+  ///Active exercise to be completed
+  RxInt active;
+
+  ///Current exercise id on the screen
+  int current = 0;
 
   RxList<Lesson> lessons;
-
+  
+  ///Lesson List loading status 
   RxBool loaded = false.obs;
-
-  RxInt active;
-  int current = 2;
 
   @override
   void onInit() async {
@@ -21,16 +24,6 @@ class LessonsController extends GetxController {
     );
 
     super.onInit();
-  }
-
-  getLesson(id) {
-    print("Getting Lesson $id");
-    if (lessons.length < id) {
-      Get.snackbar("Out of bound", "message");
-      return NoSuchLesson();
-    }
-
-    return lessons[id];
   }
 
   Future<void> refreshLessonsList() async {
@@ -49,95 +42,51 @@ class LessonsController extends GetxController {
     } catch (e) {}
   }
 
-  //   final ds = DataService();
-  // int loadedActive = await ds.getActiveLessonId();
-  // active = loadedActive.obs;
-
-  // var loadedLessons;
-  // try {
-  //   loadedLessons = await ds.getAllLessons();
-  //   if (lessons == null) {
-  //     lessons = loadedLessons.obs;
-  //   } else {
-  //     lessons.assignAll(loadedLessons);
-  //   }
-  // } on NoInternet {
-  //   print("No Internet");
-  // }
-
   void next() async {
-    current++;
-    // var lesson = getLesson(current);
-
     Get.back();
-    final Lesson next = getLesson(current);
-    if (!next.isLocked) {
-      await Get.to(LessonView(LessonController(next)));
-    } else if (next.isLocked) {
-      final ds = DataService();
 
-      bool hasPurchased = false;
-      try {
-        hasPurchased = await ds
-            .getPurchaseStatus(Get.find<AuthController>().user.value.id);
-      } catch (e) {
-        print("Nope, no internet");
-        Get.snackbar("No Internet", "Could not connect to internet");
-        return;
-      }
-
-      final bool isPreviousCompleted = true;
-
-      if (hasPurchased) {
-        if (isPreviousCompleted) {
-          var updatedLessons = lessons.map((lesson) {
-            if (lesson.id == current - 1) {
-              return Lesson(
-                  id: lesson.id,
-                  description: lesson.description,
-                  isCompleted: true,
-                  isLocked: false,
-                  title: lesson.title,
-                  videoUrl: lesson.videoUrl);
-            } else if (lesson.id == current) {
-              active = lesson.id.obs;
-              return Lesson(
-                  id: lesson.id,
-                  description: lesson.description,
-                  isCompleted: false,
-                  isLocked: false,
-                  title: lesson.title,
-                  videoUrl: lesson.videoUrl);
-            }
-            return lesson;
-          }).toList();
-
-          lessons.assignAll(updatedLessons);
-          await DataService()
-            ..updateActiveLessonPointer(current);
-
-          print("Lesson list Updated");
-
-          await Get.to(LessonView(LessonController(lessons[current])));
-        } else {
-          print("You should complete previous exercises");
-          await Get.to(LessonView(LessonController(lessons[current])),
-              arguments: LockedStatus.Incompleted);
-        }
-      } else {
-        print("Buy lessons pack");
-        await Get.to(LessonView(LessonController(lessons[current])),
-            arguments: LockedStatus.NotPaid);
-      }
+    if (!lessons[current + 1].isLocked) {
+      current++;
+      await Get.to(LessonView(LessonController(lessons[current])));
+      return;
     }
 
-    // // await Get.to(LessonView(), arguments: lesson);
+    bool hasPurchased = false;
+    final DataService dataService = DataService();
 
-    // // await Get.offNamed('/lessons/lesson',arguments: getLesson(),);
-    // await Get.offAndToNamed(
-    //   '/lessons/lesson',
-    //   arguments: lesson,
-    // );
+    try {
+      hasPurchased = await dataService
+          .getPurchaseStatus(Get.find<AuthController>().user.value.id);
+    } on NoInternet {
+      Get.snackbar("No Internet", "Could not connect to internet",
+          duration: Duration(seconds: 4));
+      return;
+    }
+
+    if (hasPurchased) {
+      lessons[current].complete();
+
+      current++;
+      if (current <= lessons.length) {
+        lessons[current].unlock();
+      }
+      active = current.obs;
+      lessons.refresh();
+      await Get.to(LessonView(LessonController(lessons[current])));
+      await dataService.updateActiveLessonPointer(current);
+    } else {
+      await Get.to(LockedItemView(), arguments: LockedStatus.NotPaid);
+    }
+  }
+
+  getLesson(id) {
+    print("Getting Lesson $id");
+    if (lessons.length < id) {
+      Get.snackbar("Out of bound", "message");
+      return NoSuchLesson();
+    }
+
+    return lessons[id];
   }
 
   void gotoLesson(index) async {
@@ -145,10 +94,4 @@ class LessonsController extends GetxController {
     print("Current Index set : $current");
     await Get.to(LessonView(LessonController(getLesson(index))));
   }
-
-  @override
-  void onReady() {}
-
-  @override
-  void onClose() {}
 }

@@ -9,8 +9,6 @@ dependencies:
   flutter:
     sdk: flutter
   payhere_mobilesdk_flutter: ^1.0.0
-  data_service:
-    path: ../data_service
 
 dev_dependencies:
   flutter_test:

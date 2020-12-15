@@ -11,13 +11,14 @@ class LessonView extends GetView<LessonController> {
   LessonView(this.controller){
     print("Lesson ${controller.lesson.isLocked}");
   }
-  final controller;
 
-  var appBar = AppBar(
+  final appBar = AppBar(
     leading: BackButton(
     ),
     elevation: 0,
   );
+
+  final controller;
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +56,8 @@ class LessonView extends GetView<LessonController> {
           ),
         ),
       );
-    } else if (controller.lesson.isLocked) {
-      return LockedItemView();
     }
+    return LockedItemView();
+    
   }
 }
