@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:organicnom/app/modules/locked_item/views/locked_item_view.dart';
 import 'package:organicnom/app/views/views/page_title_view.dart';
 import 'package:organicnom/app/views/views/video_container_view.dart';
+import 'package:rupa_box/rupa_box.dart';
 
 class LessonView extends GetView<LessonController> {
   LessonView(this.controller){
@@ -34,7 +35,9 @@ class LessonView extends GetView<LessonController> {
             children: [
               PageTitleView(controller.lesson.title),
               Center(
-                child: VideoContainerView(),
+                child: VideoContainerView(
+                  child: RupaBox(controller.lesson.videoUrl),
+                ),
               ),
               Expanded(
                 child: Padding(

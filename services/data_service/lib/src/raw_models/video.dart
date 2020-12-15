@@ -20,6 +20,7 @@ class Video {
     this.duration = Duration(seconds: result["duration"]);
     this.image = result["image"];
     this.answer = result["answer"];
+    this.url = result["urlid"];
   }
 
   Lesson toLesson({bool isCompleted = false, bool isLocked = true, int id}) {
@@ -29,7 +30,7 @@ class Video {
       description: "DESCRIPTION",
       title: this.titleEng,
       titleSinhala: this.titleSin,
-      videoUrl: url,
+      videoUrl: this.url,
       isCompleted: isCompleted,
       isLocked: isLocked,
     );
@@ -51,10 +52,11 @@ class Video {
       correctAnswer: int.tryParse(this.answer),
       title: this.titleEng,
       titleSinhala: this.titleSin,
-      // videoUrl: this.url,
-      videoUrl: "http://192.168.8.109/m.mp4",
+      videoUrl: this.url,
+      // videoUrl: "http://192.168.8.109/m.mp4",
       isCompleted: isCompleted,
       isLocked: isLocked,
+      imageUrl: this.image
     );
   }
 }

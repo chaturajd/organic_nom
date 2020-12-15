@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:data_service/data_service.dart';
 import 'package:data_service/src/data_server.dart';
 import 'package:data_service/src/raw_models/raw_models.dart';
@@ -16,16 +18,6 @@ import './data_server_factory.dart';
 import './util/exceptions.dart';
 
 class DataService {
-  // final defaultServer = FakeDataServer();
-
-  FakeDataServer fakeDataServer = DataServerFactory().get(ServerType.fake);
-  Cache cacheServer = DataServerFactory().get(ServerType.cache);
-  RemoteDataServer rdserver = DataServerFactory().get(ServerType.remote);
-
-  IDataServer defaultServer;
-  IDataServer secondaryServer;
-  // int tempActive = 2;
-
   DataService({this.defaultServer}) {
     if (defaultServer == null) {
       // defaultServer = fakeDataServer;
@@ -33,7 +25,37 @@ class DataService {
       defaultServer = cacheServer;
       secondaryServer = rdserver;
     }
+
+    getActiveLessonId().then((pointer) {
+      getAllLessons().then((exercises) {
+        _lessonsProgressController.sink.add((pointer / exercises.length) * 100);
+      });
+    });
+
+    getActiveExerciseId().then((pointer) {
+      getAllLessons().then((exercises) {
+        _exercisesProgressController.sink
+            .add((pointer / exercises.length) * 100);
+      });
+    });
   }
+
+  Cache cacheServer = DataServerFactory().get(ServerType.cache);
+  // final defaultServer = FakeDataServer();
+  IDataServer defaultServer;
+  FakeDataServer fakeDataServer = DataServerFactory().get(ServerType.fake);
+  RemoteDataServer rdserver = DataServerFactory().get(ServerType.remote);
+  IDataServer secondaryServer;
+  // int tempActive = 2;
+
+  final _exercisesProgressController = StreamController<double>();
+  final _lessonsProgressController = StreamController<double>();
+
+  Stream<double> get exercisesProgressController =>
+      _exercisesProgressController.stream;
+
+  Stream<double> get lessonsProgressController =>
+      _lessonsProgressController.stream;
 
   /// Should be initialized before using cache
   /// This will initialize the local cache database.
@@ -115,6 +137,13 @@ class DataService {
   Future<void> updateActiveLessonPointer(int pointer) async {
     final box = await Hive.openBox(boxes.varData);
     box.put(keys.activeLessonPointer, pointer);
+
+    getActiveLessonId().then((pointer) {
+      getAllLessons().then((exercises) {
+        _lessonsProgressController.sink.add((pointer / exercises.length) * 100);
+        print("Event added Lesson complete progress");
+      });
+    });
   }
 
   ///Update the pointer for the active exercise.
@@ -124,6 +153,13 @@ class DataService {
     final box = await Hive.openBox(boxes.varData);
     box.put(keys.activeExercisePointer, pointer);
     print("DataService :: updated activeExercisePointer $pointer");
+
+    getActiveExerciseId().then((pointer) {
+      getAllExercises().then((exercises) {
+        _exercisesProgressController.sink
+            .add((pointer / exercises.length) * 100);
+      });
+    });
   }
 
   ///Get the pointer value for the active exercise
@@ -174,6 +210,7 @@ class DataService {
   Stream<ServerSigninStatus> signInWithServer(fbuser) async* {
     yield ServerSigninStatus.Signingin;
     if (fbuser == null) yield ServerSigninStatus.WaitingForOauthProvider;
+
     var user;
     try {
       user = await rdserver.getUserByOauthId(fbuser.id);
@@ -204,6 +241,9 @@ class DataService {
         yield ServerSigninStatus.SavingToCache;
         cacheServer.updateUserDetails(user);
         yield ServerSigninStatus.Success;
+        Logger.log(
+          log: LogSignIn(user.id),
+        );
       }
     } else {
       yield ServerSigninStatus.Success;

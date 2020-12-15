@@ -25,7 +25,8 @@ class RemoteDataServer implements IDataServer {
     await checkConnectivity();
 
     // var results = await driver.select(tableName, ["*"]);
-    const String query = "SELECT * FROM apps_videos WHERE type='M' ";
+    const String query =
+        "SELECT * FROM apps_videos WHERE type='M' ORDER BY `apps_videos`.`id` ASC ";
     var results = await driver.rawSelect(query);
 
     List<Exercise> exercises = List<Exercise>();
@@ -52,6 +53,9 @@ class RemoteDataServer implements IDataServer {
     }
     print("Remote Server :: iterator :: $index ");
     print("Remote Server :: Exercises Fetched :: ${exercises.length}");
+    // for (var item in exercises) {
+    //   print(item.dbId);
+    // }
     return Future.value(exercises);
   }
 

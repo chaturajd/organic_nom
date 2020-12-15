@@ -4,6 +4,23 @@ part 'exercise.g.dart';
 
 @HiveType(typeId: 20)
 class Exercise {
+  Exercise({
+    this.id,
+    this.dbId,
+    this.title,
+    this.titleSinhala,
+    this.description,
+    this.videoUrl,
+    this.isCompleted,
+    this.answers,
+    this.correctAnswer,
+    this.isLocked = true,
+    this.imageUrl,
+  });
+
+  bool isCompleted;
+  bool isLocked;
+
   @HiveField(0)
   int id;
 
@@ -28,22 +45,20 @@ class Exercise {
   @HiveField(7)
   Map<int, String> answers;
 
-  bool isCompleted;
-  bool isLocked;
+  @HiveField(8)
+  String imageUrl;
 
-  Exercise({
-    this.id,
-    this.dbId,
-    this.title,
-    this.titleSinhala,
-    this.description,
-    this.videoUrl,
-    this.isCompleted,
-    this.answers,
-    this.correctAnswer,
-    this.isLocked = true,
-  });
-
+  printme() {
+    print("*********************Exercise*********************");
+    print("id       : ${this.id}");
+    print("dbId     : ${this.dbId}");
+    print("title    : ${this.title}");
+    print("videoUrl : ${this.videoUrl}");
+    print("imageUrl : ${this.imageUrl}");
+    print("Locked   : ${this.isLocked}");
+    print("Completed: ${this.isCompleted}");
+    print("*********************Exercise*********************");
+  }
 }
 
 // class UnlockedExercise extends Exercise {

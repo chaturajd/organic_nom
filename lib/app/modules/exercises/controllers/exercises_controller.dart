@@ -109,6 +109,9 @@ class ExercisesController extends GetxController {
                     id: exercise.id,
                     isCompleted: true,
                     isLocked: false,
+                    dbId: exercise.dbId,
+                    imageUrl: exercise.imageUrl,
+                    titleSinhala: exercise.titleSinhala,
                     title: exercise.title,
                     videoUrl: exercise.videoUrl);
               } else if (exercise.id == current) {
@@ -120,6 +123,9 @@ class ExercisesController extends GetxController {
                     id: exercise.id,
                     isCompleted: false,
                     isLocked: false,
+                    dbId: exercise.dbId,
+                    imageUrl: exercise.imageUrl,
+                    titleSinhala: exercise.titleSinhala,
                     title: exercise.title,
                     videoUrl: exercise.videoUrl);
               }

@@ -1,6 +1,5 @@
-import 'package:better_player/better_player.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:organicnom/app/modules/exercises/exercise/controllers/exercise_controller.dart';
@@ -9,15 +8,15 @@ import 'package:organicnom/app/views/views/badge_view.dart';
 import 'package:organicnom/app/views/views/page_title_view.dart';
 import 'package:organicnom/app/views/views/subtitle_view.dart';
 import 'package:organicnom/app/views/views/video_container_view.dart';
-import 'package:organicnom/app/views/views/video_player.dart';
 import 'package:rupa_box/rupa_box.dart';
 
-class ExerciseView extends GetView<ExerciseController> {
+class ExerciseView extends StatelessWidget {
   ExerciseView(this.controller) {
-    print("EXERCISEVIEW CONST_ isLocked ${controller.exercise.isLocked}");
+    print("EXERCISEVIEW CONST_ isLocked ${controller.exercise.videoUrl}");
+    controller.exercise.printme();
   }
 
-  final controller;
+  final ExerciseController controller;
 
   final appBar = AppBar(
     leading: BackButton(),
@@ -43,9 +42,9 @@ class ExerciseView extends GetView<ExerciseController> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ListView(
               children: [
-                Obx(() {
-                  return Text(controller.errormsg.value);
-                }),
+                // Obx(() {
+                //   return Text(controller.errormsg.value);
+                // }),
                 PageTitleView(controller.exercise.title),
                 Center(
                   child: Padding(
@@ -55,7 +54,20 @@ class ExerciseView extends GetView<ExerciseController> {
                         borderRadius: BorderRadius.circular(6),
                         color: Colors.black12,
                       ),
-                      child: Icon(Icons.image),
+                      child: CachedNetworkImage(
+                        imageUrl: controller.exercise.imageUrl == null ? "": controller.exercise.imageUrl,
+                        placeholder: (context,s){
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                        errorWidget: (context,s,d){
+                          return Center(
+                            child: Text("Failed to load image"),
+                          );
+                        },
+                      ),
+                      // Icon(Icons.image),
                       width: double.infinity,
                       height: 300,
                     ),
@@ -152,7 +164,8 @@ class ExerciseView extends GetView<ExerciseController> {
                 VideoContainerView(
                     child:
                         // VideoPlayer("http://192.168.8.109/a.mp4"),
-                        RupaBox("http://192.168.8.109/a.mp4")
+                        // RupaBox("http://192.168.8.109/a.mp4")
+                        RupaBox(controller.exercise.videoUrl)
 
                     // VlcPlayer(
                     //   url: "http://192.168.8.109/a.mp4",
@@ -178,7 +191,9 @@ class ExerciseView extends GetView<ExerciseController> {
                 //     }
                 //   },
                 // ),
-                SizedBox(height: 80,),
+                SizedBox(
+                  height: 80,
+                ),
               ],
             ),
           ),

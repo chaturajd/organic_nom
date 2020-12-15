@@ -19,11 +19,6 @@ enum PopUpSelection { Logout, ThemeChange }
 class HomeView extends GetView<HomeController> {
   HomeView() {
     Get.put(HomeController());
-    Logger.log(
-      log: LogSignIn(
-        Get.find<AuthController>().user.value.id,
-      ),
-    );
   }
 
   void signOut() {
@@ -31,11 +26,69 @@ class HomeView extends GetView<HomeController> {
   }
 
   void toLessons() {
+    controller.youtubePlayerController.value.pause();
     Get.toNamed(Routes.LESSONS);
   }
 
   void toExercises() {
+    controller.youtubePlayerController.value.pause();
     Get.toNamed(Routes.EXERCISES);
+  }
+
+  Column mainButton(
+      {@required String label,
+      @required IconData iconData,
+      Function onClick,
+      double progress}) {
+    return Column(
+      children: [
+        CricularProgressBar(
+          progress: progress,
+          child: InkWell(
+            onTap: () => onClick(),
+            child: CircleAvatar(
+              radius: 64,
+              backgroundColor: Colors.orange,
+              child: Icon(
+                iconData,
+                size: 48,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Text(
+            label,
+            style:
+                GoogleFonts.overpass(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget circleButton({@required Icon icon, Function onPressed}) {
+    return InkWell(
+      onTap: () => onPressed(),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(100),
+          boxShadow: [
+            BoxShadow(
+              offset: Offset(4, 8),
+              blurRadius: 23,
+              spreadRadius: -9,
+              color: Colors.black87,
+            )
+          ],
+        ),
+        child: icon,
+        width: 44,
+        height: 44,
+      ),
+    );
   }
 
   @override
@@ -142,25 +195,40 @@ class HomeView extends GetView<HomeController> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          mainButton(
-                              progress: 21,
-                              label: "Lessons",
-                              iconData: FontAwesomeIcons.bookOpen,
-                              onClick: toLessons),
-                          mainButton(
-                              progress: 46,
-                              label: "Exercises",
-                              iconData: FontAwesomeIcons.pen,
-                              onClick: toExercises),
+                          Obx(() {
+                            print("LESSON BUILDING PROGRESSBAR");
+                            return mainButton(
+                                progress: controller.lessonsProgress.value,
+                                label: "Lessons",
+                                iconData: FontAwesomeIcons.bookOpen,
+                                onClick: toLessons);
+                          }),
+                          Obx(() {
+                            return mainButton(
+                                progress: controller.exercisesProgress.value,
+                                label: "Exercises",
+                                iconData: FontAwesomeIcons.pen,
+                                onClick: toExercises);
+                          }),
                         ],
                       ),
                     ),
                   ),
                   Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: VideoContainerView(
+                      child: Obx(
+                        () => VideoContainerView(
+                          child: YoutubePlayer(
+                            // controller: YoutubePlayerController(initialVideoId: "_MbexTzJjBE"),
+                            controller:
+                                controller.youtubePlayerController.value,
+                            bottomActions: [],
+                          ),
                           // child: Be,
-                          )
+                        ),
+                      )
+                      // iLnmTe5Q2Qw
+                      // https://youtu.be/_MbexTzJjBE
                       // YoutubePlayer(
                       //     controller: controller.youtubePlayerController,
                       //     showVideoProgressIndicator: true,
@@ -185,62 +253,6 @@ class HomeView extends GetView<HomeController> {
             Align(alignment: Alignment.bottomCenter, child: LogoView()),
           ],
         ),
-      ),
-    );
-  }
-
-  Column mainButton(
-      {@required String label,
-      @required IconData iconData,
-      Function onClick,
-      double progress}) {
-    return Column(
-      children: [
-        CricularProgressBar(
-          progress: progress,
-          child: InkWell(
-            onTap: () => onClick(),
-            child: CircleAvatar(
-              radius: 64,
-              backgroundColor: Colors.orange,
-              child: Icon(
-                iconData,
-                size: 48,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Text(
-            label,
-            style:
-                GoogleFonts.overpass(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget circleButton({@required Icon icon, Function onPressed}) {
-    return InkWell(
-      onTap: () => onPressed(),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(100),
-          boxShadow: [
-            BoxShadow(
-              offset: Offset(4, 8),
-              blurRadius: 23,
-              spreadRadius: -9,
-              color: Colors.black87,
-            )
-          ],
-        ),
-        child: icon,
-        width: 44,
-        height: 44,
       ),
     );
   }

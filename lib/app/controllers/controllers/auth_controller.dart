@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:data_service/data_service.dart' as dataService;
 import 'package:get/get.dart';
 
@@ -18,20 +20,23 @@ class AuthController extends GetxController {
     user.bindStream(_authService.user);
     // signInStatus.bindStream(_authService.signInWithGoogle());
     // String userId = user.value.id == null ? '': user.value.id.toString();
-    if (user.value != null)
-      serverUserStatus.bindStream(_dataService.signInWithServer(user.value));
+    Timer(Duration(seconds: 2), () {
+      if (user.value != null)
+        serverUserStatus.bindStream(_dataService.signInWithServer(user.value));
+    });
 
     super.onInit();
   }
 
   Future<void> siginIn() async {
     await _signInWithGoogle();
+
     serverUserStatus.bindStream(_dataService.signInWithServer(user.value));
   }
 
   Future<void> _signInWithGoogle() async {
     try {
-      _authService.signInWithGoogle();
+      await _authService.signInWithGoogle();
     } on Exception {
       print("Sign in with google failed");
     }

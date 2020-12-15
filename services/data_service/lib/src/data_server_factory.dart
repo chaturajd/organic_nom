@@ -15,7 +15,13 @@ class DataServerFactory {
         return Cache();
         break;
       case ServerType.remote:
-        return RemoteDataServer(DbDriver());
+        return RemoteDataServer(DbDriver(
+          database: "organicapp",
+          host: "db4free.net",
+          port: 3306,
+          password: "password",
+          user: "chaturaj",
+        ));
         break;
       default:
     }

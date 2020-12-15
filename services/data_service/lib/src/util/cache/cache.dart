@@ -11,53 +11,54 @@ import '../exceptions.dart';
 
 class Cache implements IDataServer {
   @override
-  Future<List<Exercise>> getAllExercises({int active}) async {
-    if(await _isCacheUptoDate(boxes.exercisesInfo))
-{
-    if (!Hive.isBoxOpen(boxes.exercises)) await Hive.openBox(boxes.exercises);
-    Box _box = Hive.box(boxes.exercises);
-
-    var fromBox = _box.values.toList();
-
-    List<Exercise> exercises = fromBox.map((exercise) {
-      print("CACHE :: exercises id ${exercise.id}");
-      return Exercise(
-        answers: exercise.answers,
-        correctAnswer: exercise.correctAnswer,
-        dbId: exercise.dbId,
-        description: exercise.description,
-        id: exercise.id,
-        title: exercise.title,
-        titleSinhala: exercise.titleSinhala,
-        videoUrl: exercise.videoUrl,
-        isLocked: exercise.id == active
-            ? false
-            : exercise.id > active
-                ? true
-                : false,
-        isCompleted: exercise.id == active
-            ? false
-            : exercise.id > active
-                ? false
-                : true,
-      );
-    }).toList();
-
-    print("CACHE :: Pulled exercises from cache ${exercises.length}");
-    return Future.value(exercises);}else{
-      throw TooOldBox;
-    }
+  Future<int> getActiveExerciseId() {
+    // TODO: implement getActiveExerciseId
+    throw UnimplementedError();
   }
 
-  Future<void> saveExercises(List<Exercise> exercises) async {
-    //Update exercises list
-    if (!Hive.isBoxOpen(boxes.exercises)) await Hive.openBox(boxes.exercises);
-    Box box = Hive.box(boxes.exercises);
-    await box.clear();
-    box.addAll(exercises);
+  @override
+  Future<int> getActiveLessonId() {
+    // TODO: implement getActiveLessonId
+    throw UnimplementedError();
+  }
 
-    //Update 'Last Updated date time'
-    _setLastUpdatedAt(boxes.exercisesInfo);
+  @override
+  Future<List<Exercise>> getAllExercises({int active}) async {
+    if (await _isCacheUptoDate(boxes.exercisesInfo)) {
+      if (!Hive.isBoxOpen(boxes.exercises)) await Hive.openBox(boxes.exercises);
+      Box _box = Hive.box(boxes.exercises);
+
+      var fromBox = _box.values.toList();
+
+      List<Exercise> exercises = fromBox.map((exercise) {
+        return Exercise(
+          answers: exercise.answers,
+          correctAnswer: exercise.correctAnswer,
+          dbId: exercise.dbId,
+          description: exercise.description,
+          id: exercise.id,
+          title: exercise.title,
+          titleSinhala: exercise.titleSinhala,
+          videoUrl: exercise.videoUrl,
+          imageUrl: exercise.imageUrl,
+          isLocked: exercise.id == active
+              ? false
+              : exercise.id > active
+                  ? true
+                  : false,
+          isCompleted: exercise.id == active
+              ? false
+              : exercise.id > active
+                  ? false
+                  : true,
+        );
+      }).toList();
+
+      print("CACHE :: Pulled exercises from cache ${exercises.length}");
+      return Future.value(exercises);
+    } else {
+      throw TooOldBox;
+    }
   }
 
   @override
@@ -92,9 +93,39 @@ class Cache implements IDataServer {
       print("CACHE :: Pulled lessons from cache ${lessons.length}");
 
       return Future.value(lessons);
-    }else{
+    } else {
       throw TooOldBox;
     }
+  }
+
+  @override
+  Future<bool> getPurchaseStatus({String userId}) async {
+    if (!Hive.isBoxOpen(boxes.purchaseDetails))
+      await Hive.openBox(boxes.purchaseDetails);
+    Box _box = Hive.box(boxes.purchaseDetails);
+
+    try {
+      if (await _isCacheUptoDate(boxes.purchaseDetails,
+          dateKey: keys.lastUpdatedAt)) {
+        return _box.get(keys.hasPurchased, defaultValue: false);
+      } else {
+        print("Throwing TooOldBox");
+        throw TooOldBox;
+      }
+    } on TooOldBox {
+      rethrow;
+    }
+  }
+
+  Future<void> saveExercises(List<Exercise> exercises) async {
+    //Update exercises list
+    if (!Hive.isBoxOpen(boxes.exercises)) await Hive.openBox(boxes.exercises);
+    Box box = Hive.box(boxes.exercises);
+    await box.clear();
+    box.addAll(exercises);
+
+    //Update 'Last Updated date time'
+    _setLastUpdatedAt(boxes.exercisesInfo);
   }
 
   Future<void> saveLessons(List<Lesson> lessons) async {
@@ -134,25 +165,6 @@ class Cache implements IDataServer {
     return true;
   }
 
-  @override
-  Future<bool> getPurchaseStatus({String userId}) async {
-    if (!Hive.isBoxOpen(boxes.purchaseDetails))
-      await Hive.openBox(boxes.purchaseDetails);
-    Box _box = Hive.box(boxes.purchaseDetails);
-
-    try {
-      if (await _isCacheUptoDate(boxes.purchaseDetails,
-          dateKey: keys.purchaseStatusUpdatedAt)) {
-        return _box.get(keys.hasPurchased, defaultValue: false);
-      } else {
-        print("Throwing TooOldBox");
-        throw TooOldBox;
-      }
-    } on TooOldBox {
-      rethrow;
-    }
-  }
-
   // Future<void> setPurchaseStatus({bool status = false}) async {
   //   if (!Hive.isBoxOpen(boxes.varData)) await Hive.openBox(boxes.varData);
   //   Box _box = Hive.box(boxes.varData);
@@ -169,6 +181,20 @@ class Cache implements IDataServer {
     _box.clear();
 
     print("CACHE :: purchase details cleared");
+  }
+
+  void updatePurchaseDetails(bool hasPurchased) async {
+    if (!Hive.isBoxOpen(boxes.purchaseDetails))
+      await Hive.openBox(boxes.purchaseDetails);
+    Box _box = Hive.box(boxes.purchaseDetails);
+
+    // await _box.clear();
+    _box.put(keys.lastUpdatedAt, DateTime.now());
+    _box.put(keys.hasPurchased, true);
+
+    print("CACHE :: PUrchase details updated");
+
+    print("updated date cahe :${_box.get(keys.lastUpdatedAt)}");
   }
 
   updateUserDetails(User user) async {
@@ -190,28 +216,7 @@ class Cache implements IDataServer {
     return (_box.get(keys.userDetails) as User).id;
   }
 
-  void updatePurchaseDetails(bool hasPurchased) async {
-    if (!Hive.isBoxOpen(boxes.purchaseDetails))
-      await Hive.openBox(boxes.purchaseDetails);
-    Box _box = Hive.box(boxes.purchaseDetails);
-
-    await _box.clear();
-    _box.put(keys.lastUpdatedAt, DateTime.now());
-    _box.put(keys.hasPurchased, hasPurchased);
-  }
-
-  @override
-  Future<int> getActiveExerciseId() {
-    // TODO: implement getActiveExerciseId
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<int> getActiveLessonId() {
-    // TODO: implement getActiveLessonId
-    throw UnimplementedError();
-  }
-
   void updateActiveLessonId(int activeId) {}
+
   void updateActiveExerciseId(int activeId) {}
 }
