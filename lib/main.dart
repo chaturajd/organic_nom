@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:organicnom/app/controllers/bindigs/auth_binding.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'app/routes/app_pages.dart';
+import 'app/themes/themes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,9 +23,15 @@ void main() async {
       title: "Organic Nomenclature",
       initialBinding: AuthBinding(),
       initialRoute: AppPages.INITIAL,
-      themeMode: ThemeMode.dark,
+      // themeMode: ThemeMode.dark,
       getPages: AppPages.routes,
       defaultTransition: Transition.topLevel,
+      theme: darkTheme,
+
+      darkTheme: lightTheme,
+      // showPerformanceOverlay: true,
+      // checkerboardOffscreenLayers: true,
+      // debugShowCheckedModeBanner: false,
     ),
   );
 }

@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:organicnom/app/controllers/controllers/auth_controller.dart';
 import 'package:organicnom/app/modules/home/controllers/home_controller.dart';
 import 'package:organicnom/app/routes/app_pages.dart';
+import 'package:organicnom/app/themes/themes.dart';
 import 'package:organicnom/app/views/views/logo_view.dart';
 import 'package:organicnom/app/views/views/video_container_view.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -101,9 +102,9 @@ class HomeView extends GetView<HomeController> {
                   break;
                 case PopUpSelection.ThemeChange:
                   if (Get.isDarkMode) {
-                    Get.changeTheme(ThemeData.light());
+                    Get.changeTheme(lightTheme);
                   } else {
-                    Get.changeTheme(ThemeData.dark());
+                    Get.changeTheme(darkTheme);
                   }
                   break;
                 default:
