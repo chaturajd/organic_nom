@@ -18,6 +18,9 @@ class ExercisesController extends GetxController {
   ///Exercises List loading status
   RxBool loaded = false.obs;
 
+  ///No internet
+  RxBool noInternet = false.obs;
+
   @override
   void onClose() {}
 
@@ -25,7 +28,6 @@ class ExercisesController extends GetxController {
   void onInit() async {
     super.onInit();
     await refreshExercisesList();
-    loaded.value = true;
   }
 
   ///Use only to navigate from exercises list to a exercise
@@ -81,6 +83,7 @@ class ExercisesController extends GetxController {
   }
 
   Future<void> refreshExercisesList() async {
+    this.noInternet.value = false;
     try {
       final ds = DataService();
       int loadedAcitve = await ds.getActiveExerciseId();
@@ -93,6 +96,10 @@ class ExercisesController extends GetxController {
       } else {
         exercises.assignAll(loadedExercises.obs);
       }
-    } catch (e) {}
+    loaded.value = true;
+    this.noInternet.value = false;
+    }on NoInternet {
+      this.noInternet.value = true;
+    }catch (e) {}
   }
 }

@@ -11,6 +11,7 @@ import 'package:organicnom/app/views/views/logo_view.dart';
 import 'package:organicnom/app/views/views/video_container_view.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../../../views/views/circular_progressbar.dart';
+import '../../../views/views/action_button.dart';
 
 enum PopUpSelection { Logout, ThemeChange }
 
@@ -93,6 +94,12 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.chevron_left),
+          onPressed: () {
+            Get.find<AuthController>().siginIn();
+          },
+        ),
         actions: [
           PopupMenuButton<PopUpSelection>(
             onSelected: (PopUpSelection selection) {
@@ -203,17 +210,17 @@ class HomeView extends GetView<HomeController> {
                       ),
                     ),
                   ),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Obx(
-                        () => VideoContainerView(
-                          child: YoutubePlayer(
-                            controller:
-                                controller.youtubePlayerController.value,
-                            bottomActions: [],
-                          ),
-                        ),
-                      )),
+                  // Padding(
+                  //     padding: const EdgeInsets.symmetric(horizontal: 12),
+                  //     child: Obx(
+                  //       () => VideoContainerView(
+                  //         child: YoutubePlayer(
+                  //           controller:
+                  //               controller.youtubePlayerController.value,
+                  //           bottomActions: [],
+                  //         ),
+                  //       ),
+                  //     )),
                 ],
               ),
             ),

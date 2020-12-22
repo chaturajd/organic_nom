@@ -55,7 +55,39 @@ class ExercisesView extends GetView<ExercisesController> {
       elevation: 0,
     );
 
-    
+    var retry = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Center(
+          child: RawMaterialButton(
+            constraints: BoxConstraints(maxWidth: 120),
+            onPressed: () {
+              controller.refreshExercisesList();
+            },
+            fillColor: Get.theme.primaryColor,
+            shape: StadiumBorder(),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(Icons.refresh),
+                  Text(
+                    "Try Again",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Offstage(
+          child: Text(controller.noInternet.value.toString()),
+        ),
+      ],
+    );
+
     return Scaffold(
       appBar: appBar,
       body: Padding(
@@ -66,11 +98,15 @@ class ExercisesView extends GetView<ExercisesController> {
             Expanded(
               child: Obx(
                 () {
-                  return !controller.loaded.value ||
-                          // ignore: invalid_use_of_protected_member
-                          controller.exercises.value == null
-                      ? loadingIndicator
-                      : exercisesList;
+                  if (controller.noInternet.value) {
+                    return retry;
+                  } else {
+                    return !controller.loaded.value ||
+                            // ignore: invalid_use_of_protected_member
+                            controller.exercises.value == null
+                        ? loadingIndicator
+                        : exercisesList;
+                  }
                 },
               ),
             )

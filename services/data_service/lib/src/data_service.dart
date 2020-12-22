@@ -4,7 +4,9 @@ import 'package:data_service/data_service.dart';
 import 'package:data_service/src/data_server.dart';
 import 'package:data_service/src/raw_models/raw_models.dart';
 import 'package:data_service/src/server_types.dart';
+import 'package:data_service/src/servers/api_server.dart';
 import 'package:data_service/src/servers/dataservers.dart';
+import 'package:data_service/src/util/auth_status.dart';
 import 'package:data_service/src/util/cache/cache.dart';
 import 'package:data_service/src/util/server_signin_status.dart';
 import './util/cache/hive_boxes.dart' as boxes;
@@ -22,35 +24,44 @@ class DataService {
     if (defaultServer == null) {
       // defaultServer = fakeDataServer;
       // defaultServer = rdserver;
-
-      if (this.defaultServer == null) defaultServer = cacheServer;
-      if (this.secondaryServer == null) secondaryServer = rdserver;
+      // if (this.defaultServer == null) defaultServer = rdserver;
+      // if (this.defaultServer == null) defaultServer = cacheServer;
+      if (this.defaultServer == null) defaultServer = apiServer;
+      if (this.secondaryServer == null) secondaryServer = apiServer;
     }
 
-    getActiveLessonId().then((pointer) {
-      getAllLessons().then((exercises) {
-        _lessonsProgressController.sink.add((pointer / exercises.length) * 100);
-      });
-    });
+    // getActiveLessonId().then((pointer) {
+    //   getAllLessons().then((exercises) {
+    //     _lessonsProgressController.sink.add((pointer / exercises.length) * 100);
+    //   });
+    // });
 
-    getActiveExerciseId().then((pointer) {
-      getAllLessons().then((exercises) {
-        _exercisesProgressController.sink
-            .add((pointer / exercises.length) * 100);
-      });
-    });
+    // getActiveExerciseId().then((pointer) {
+    //   getAllLessons().then((exercises) {
+    //     _exercisesProgressController.sink
+    //         .add((pointer / exercises.length) * 100);
+    //   });
+    // });
   }
 
   Cache cacheServer = DataServerFactory().get(ServerType.cache);
-  // final defaultServer = FakeDataServer();
-  IDataServer defaultServer;
   FakeDataServer fakeDataServer = DataServerFactory().get(ServerType.fake);
   RemoteDataServer rdserver = DataServerFactory().get(ServerType.remote);
-  IDataServer secondaryServer;
-  // int tempActive = 2;
+  ApiServer apiServer = DataServerFactory().get(ServerType.api);
 
-  final _exercisesProgressController = StreamController<double>();
-  final _lessonsProgressController = StreamController<double>();
+  IDataServer defaultServer;
+  IDataServer secondaryServer;
+
+  // ignore: close_sinks
+  static final _exercisesProgressController = StreamController<double>();
+
+  // ignore: close_sinks
+  static final _lessonsProgressController = StreamController<double>();
+
+  // ignore: close_sinks
+  static var _authStatus = StreamController<ServerAuthStatus>();
+
+  Stream<ServerAuthStatus> get authStatus => _authStatus.stream;
 
   Stream<double> get exercisesProgressController =>
       _exercisesProgressController.stream;
@@ -73,7 +84,10 @@ class DataService {
 
     //Initialize Syncer
     Syncer syncer = Syncer();
-    syncer.initialize();
+    Timer.periodic(Duration(minutes: 10), (timer) {
+      syncer.sync();
+    });
+    // syncer.initialize();
   }
 
   ///Get all lessons.
@@ -95,6 +109,8 @@ class DataService {
         updateCachedLessons(lessons);
 
         return lessons;
+      } on NoInternet {
+        rethrow;
       } catch (e) {
         throw e;
       }
@@ -102,28 +118,34 @@ class DataService {
   }
 
   ///Get all exercises.
-  ///If internet is avaliable refresh cache otherwise get data from cache
+  ///Try first to get from cache , remote otherwise
   Future<List<Exercise>> getAllExercises() async {
     List<Exercise> exercises;
     try {
       exercises = await defaultServer.getAllExercises(
-          active: await getActiveExerciseId());
-      return exercises;
+        active: await getActiveExerciseId(),
+      );
+    } on Unauthorized {
+      print("DATASERVICE :::: Unauthorized - signing out");
+      if (defaultServer is SignOutable) {
+        (defaultServer as SignOutable).signOut();
+        _authStatus.sink.add(ServerAuthStatus.SignedOut);
+      }
     } catch (e) {
       try {
         exercises = await secondaryServer.getAllExercises(
-            active: await getActiveLessonId());
+          active: await getActiveLessonId(),
+        );
         updateCachedExercises(exercises);
       } on NoInternet {
-        print("DATASERVICE No Internet");
-        // throw e;
+        rethrow;
       } catch (e) {
         print("DataService :: error : $e");
       }
     }
 
-    if (defaultServer is RemoteDataServer) cacheServer.saveExercises(exercises);
-    print(exercises);
+    // if (defaultServer is RemoteDataServer || defaultServer is ApiServer)
+    //   cacheServer.saveExercises(exercises);
     return exercises;
   }
 
@@ -138,6 +160,7 @@ class DataService {
   Future<void> updateActiveLessonPointer(int pointer) async {
     final box = await Hive.openBox(boxes.varData);
     box.put(keys.activeLessonPointer, pointer);
+    box.put(keys.lastUpdatedAt, DateTime.now());
 
     getActiveLessonId().then((pointer) {
       getAllLessons().then((exercises) {
@@ -153,6 +176,8 @@ class DataService {
   Future<void> updateActiveExercisePointer(int pointer) async {
     final box = await Hive.openBox(boxes.varData);
     box.put(keys.activeExercisePointer, pointer);
+    box.put(keys.lastUpdatedAt, DateTime.now());
+
     print("DataService :: updated activeExercisePointer $pointer");
 
     getActiveExerciseId().then((pointer) {
@@ -208,47 +233,55 @@ class DataService {
     return cacheServer.getServerUserId();
   }
 
+  Future<void> signOutFromServer() async {
+    apiServer.signOut();
+  }
+
   Stream<ServerSigninStatus> signInWithServer(fbuser) async* {
     yield ServerSigninStatus.Signingin;
     if (fbuser == null) yield ServerSigninStatus.WaitingForOauthProvider;
+    await apiServer.signIn(fbuser.idToken);
 
-    var user;
-    try {
-      user = await rdserver.getUserByOauthId(fbuser.id);
-    } on DbDriverError {
-      yield ServerSigninStatus.Failed;
-      return;
-    }
+    _authStatus.sink.add(ServerAuthStatus.SignedIn);
+    yield ServerSigninStatus.Success;
 
-    if (user == null) {
-      yield ServerSigninStatus.Registering;
-      String name = fbuser.name;
-      String firstName = name.split(" ")[0];
-      String lastName = name.split(" ")[1];
+    // var user;
+    // try {
+    //   user = await rdserver.getUserByOauthId(fbuser.id);
+    // } on DbDriverError {
+    //   yield ServerSigninStatus.Failed;
+    //   return;
+    // }
 
-      await rdserver.addUser(User(
-        firstName: firstName,
-        lastName: lastName == null ? "" : lastName,
-        oauthProvider: 'google',
-        oauthUid: fbuser.id,
-        picture: fbuser.photo,
-        email: fbuser.email,
-      ));
+    // if (user == null) {
+    //   yield ServerSigninStatus.Registering;
+    //   String name = fbuser.name;
+    //   String firstName = name.split(" ")[0];
+    //   String lastName = name.split(" ")[1];
 
-      user = await rdserver.getUserByOauthId(fbuser.id);
-      if (user == null) {
-        yield ServerSigninStatus.Failed;
-      } else {
-        yield ServerSigninStatus.SavingToCache;
-        cacheServer.updateUserDetails(user);
-        yield ServerSigninStatus.Success;
-        Logger.log(
-          log: LogSignIn(user.id),
-        );
-      }
-    } else {
-      yield ServerSigninStatus.Success;
-    }
+    //   await rdserver.addUser(User(
+    //     firstName: firstName,
+    //     lastName: lastName == null ? "" : lastName,
+    //     oauthProvider: 'google',
+    //     oauthUid: fbuser.id,
+    //     picture: fbuser.photo,
+    //     email: fbuser.email,
+    //   ));
+
+    //   user = await rdserver.getUserByOauthId(fbuser.id);
+    //   if (user == null) {
+    //     yield ServerSigninStatus.Failed;
+    //   } else {
+    //     yield ServerSigninStatus.SavingToCache;
+    //     cacheServer.updateUserDetails(user);
+    //     yield ServerSigninStatus.Success;
+    //     Logger.log(
+    //       log: LogSignIn(user.id),
+    //     );
+    //   }
+    // } else {
+    //   yield ServerSigninStatus.Success;
+    // }
   }
 
   ///Returns true if user has purchased, false otherwise
@@ -304,5 +337,3 @@ class DataService {
   //   print("Data Service :: Exercises Fetched :: ${exercise.length}");
   // }
 }
-
-class InternetNotAvaliable implements Exception {}

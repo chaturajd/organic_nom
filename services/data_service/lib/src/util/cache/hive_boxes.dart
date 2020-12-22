@@ -8,16 +8,6 @@ const String lessons = "lessons";
 ///<exerciseId> : <exercise in json> 
 const String exercises = "exercises";
 
-///Active lesson pointer
-///<pointer> : <>
-///<updated_at> : <> 
-const String lessonPointer = "lessonPointer";
-
-///Active exerise pointer
-///<pointer> : <>
-///<updated_at> : <>
-const String exercisePointer = "exercisePointer";
-
 ///Info related to lessons
 ///<updated_at> : <>
 const String lessonsInfo = "lessonsInfo";
@@ -26,6 +16,9 @@ const String lessonsInfo = "lessonsInfo";
 ///<updated_at> : <>
 const String exercisesInfo = "exercisesInfo";
 
+///User Details
+/// - accessToken
+/// - refreshToken
 const String userdetails ="userdetails";
 
 const String purchaseDetails = "purchasedetails";

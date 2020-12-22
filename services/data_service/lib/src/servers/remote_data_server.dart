@@ -92,7 +92,7 @@ class RemoteDataServer implements IDataServer {
   }
 
   @override
-  Future<bool> getPurchaseStatus({String userId}) async {
+  Future<bool> getPurchaseStatus({int userId}) async {
     return true;
     try {
       await checkConnectivity();

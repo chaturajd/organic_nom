@@ -23,11 +23,10 @@ void main() async {
       title: "Organic Nomenclature",
       initialBinding: AuthBinding(),
       initialRoute: AppPages.INITIAL,
-      // themeMode: ThemeMode.dark,
       getPages: AppPages.routes,
       defaultTransition: Transition.topLevel,
-      theme: darkTheme,
 
+      theme: darkTheme,
       darkTheme: lightTheme,
       // showPerformanceOverlay: true,
       // checkerboardOffscreenLayers: true,

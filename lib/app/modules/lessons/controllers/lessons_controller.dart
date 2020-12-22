@@ -13,20 +13,23 @@ class LessonsController extends GetxController {
   int current = 0;
 
   RxList<Lesson> lessons;
-  
-  ///Lesson List loading status 
+
+  ///Lesson List loading status
   RxBool loaded = false.obs;
+
+  ///No internet
+  RxBool noInternet = false.obs;
 
   @override
   void onInit() async {
-    await refreshLessonsList().then(
-      (_) => loaded.value = true,
-    );
+    await refreshLessonsList();
 
     super.onInit();
   }
 
   Future<void> refreshLessonsList() async {
+    noInternet.value = false;
+    loaded.value = false;
     try {
       final ds = DataService();
       int loadedActive = await ds.getActiveLessonId();
@@ -39,6 +42,9 @@ class LessonsController extends GetxController {
       } else {
         lessons.assignAll(loadedLessons);
       }
+      loaded.value = true;
+    } on NoInternet {
+      noInternet.value = true;
     } catch (e) {}
   }
 

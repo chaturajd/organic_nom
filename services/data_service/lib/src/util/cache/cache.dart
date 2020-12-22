@@ -1,4 +1,3 @@
-
 import 'package:data_service/src/data_server.dart';
 import 'package:data_service/src/models/lesson.dart';
 import 'package:data_service/src/models/exercise.dart';
@@ -98,7 +97,7 @@ class Cache implements IDataServer {
   }
 
   @override
-  Future<bool> getPurchaseStatus({String userId}) async {
+  Future<bool> getPurchaseStatus({int userId}) async {
     if (!Hive.isBoxOpen(boxes.purchaseDetails))
       await Hive.openBox(boxes.purchaseDetails);
     Box _box = Hive.box(boxes.purchaseDetails);

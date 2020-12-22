@@ -1,0 +1,1 @@
+enum ServerAuthStatus{SignedIn,SignedOut,Unknown}

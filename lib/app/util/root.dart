@@ -7,15 +7,16 @@ import 'package:organicnom/app/modules/signin/views/signin_view.dart';
 
 class Root extends GetWidget<AuthController> {
   final _controller = Get.find<AuthController>();
-
   @override
   Widget build(BuildContext context) {
     // print(_controller.user.value.email);
     // return SigninView();
     return Obx(() {
       print("ROOT USER STATE :: ${_controller.user.value}");
-      return _controller.user.value != null && _controller.serverUserStatus.value == ServerSigninStatus.Success
-          ? 
+      return _controller.user.value != null &&
+              _controller.authStatus.value == ServerAuthStatus.SignedIn
+          // _controller.serverUserStatus.value == ServerSigninStatus.Success
+          ?
           // Get.toNamed('/home')
           HomeView()
           : SigninView();

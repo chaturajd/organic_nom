@@ -47,7 +47,7 @@ class FakeDataServer implements IDataServer {
   }
 
   @override
-  Future<bool> getPurchaseStatus({String userId}) {
+  Future<bool> getPurchaseStatus({int userId}) {
     return Future.value(true);
   }
 

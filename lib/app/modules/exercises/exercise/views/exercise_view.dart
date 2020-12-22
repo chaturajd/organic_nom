@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,7 +9,8 @@ import 'package:organicnom/app/views/views/badge_view.dart';
 import 'package:organicnom/app/views/views/page_title_view.dart';
 import 'package:organicnom/app/views/views/subtitle_view.dart';
 import 'package:organicnom/app/views/views/video_container_view.dart';
-import 'package:rupa_box/rupa_box.dart';
+// import 'package:rupa_box/rupa_box.dart';
+import 'package:organicnom/app/views/views/action_button.dart';
 
 class ExerciseView extends StatelessWidget {
   ExerciseView(this.controller);
@@ -109,10 +111,29 @@ class ExerciseView extends StatelessWidget {
         return Scaffold(
           appBar: appBar,
           floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              controller.next();
-            },
+            onPressed: () => controller.next(),
+            child: Icon(Icons.check_circle,color: Colors.white,),
           ),
+          // floatingActionButton: Obx(
+          //   () => controller.hasVideoCompleted.value
+          //       ? ActionButton(
+          //           onClick: controller.next
+          //           // () {
+          //           //   print("CLICKED");
+          //           //   controller.next();
+          //           // }
+          //           ,
+          //           text: "asd",
+          //         )
+          //       // FloatingActionButton(
+          //       //               onPressed: () {
+          //       //                 controller.next();
+          //       //               },
+          //       //             )
+          //       : Offstage(
+          //           child: Text(controller.hasVideoCompleted.value.toString()),
+          //         ),
+          // ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ListView(
@@ -167,8 +188,15 @@ class ExerciseView extends StatelessWidget {
                 ),
                 SubtitleView("Explainer"),
                 VideoContainerView(
-                  child: RupaBox(controller.exercise.videoUrl),
-                ),
+                    // child: RupaBox(controller.exercise.videoUrl),
+                    child: Obx(() => controller.playerInitialized.value
+                        ? Chewie(
+                            controller: controller.chewieController,
+                          )
+                        : Container(
+                            child: Text(
+                                controller.playerInitialized.value.toString()),
+                          ))),
                 SizedBox(height: 80),
               ],
             ),

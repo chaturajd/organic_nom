@@ -12,23 +12,39 @@ class AuthController extends GetxController {
 
   Rx<User> user = Rx<User>();
 
+  Rx<dataService.ServerAuthStatus> authStatus =
+      dataService.ServerAuthStatus.Unknown.obs;
+
   final AuthService _authService = AuthService();
   dataService.DataService _dataService = dataService.DataService();
 
   @override
   void onInit() {
     user.bindStream(_authService.user);
+    // authStatus.bindStream(_dataService.authStatus);
 
-    Timer(Duration(milliseconds: 100), () {
-      if (user.value != null)
-        serverUserStatus.bindStream(_dataService.signInWithServer(user.value));
+    _dataService.authStatus.listen((event) {
+      authStatus.value = event;
+      print("AUTH CONTROLLER :: Auth status changed to $event");
     });
+
+    // Timer(Duration(milliseconds: 100), () {
+    //   if (user.value != null) {
+    //     try {
+    //       serverUserStatus
+    //           .bindStream(_dataService.signInWithServer(user.value));
+    //     } catch (e){
+    //       print("No Internet");
+    //     }
+    //   }
+    // });
 
     super.onInit();
   }
 
   Future<void> siginIn() async {
     await _signInWithGoogle();
+    user.value.idToken = await _authService.getIdToken();
     serverUserStatus.bindStream(_dataService.signInWithServer(user.value));
   }
 

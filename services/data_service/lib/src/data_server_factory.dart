@@ -1,5 +1,6 @@
 import 'package:data_service/src/data_server.dart';
 import 'package:data_service/src/server_types.dart';
+import 'package:data_service/src/servers/api_server.dart';
 import 'package:data_service/src/util/cache/cache.dart';
 import 'package:db_driver/db_driver.dart';
 
@@ -23,8 +24,10 @@ class DataServerFactory {
           user: "chaturaj",
         ));
         break;
+      case ServerType.api:
+        return ApiServer();
       default:
     }
-  return null;
+    return null;
   }
 }

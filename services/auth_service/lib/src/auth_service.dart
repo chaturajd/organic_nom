@@ -8,7 +8,6 @@ class SignInWithGoogleFailure implements Exception {}
 
 class SignOutFailure implements Exception {}
 
-
 class AuthService {
   AuthService({
     firebase_auth.FirebaseAuth firebaseAuth,
@@ -40,7 +39,6 @@ class AuthService {
   //     throw SignInWithGoogleFailure();
   //   }
   // }
-
   Future<void> signInWithGoogle() async {
     try {
       final googleUser = await _googleSignIn.signIn();
@@ -50,11 +48,13 @@ class AuthService {
         idToken: googleAuth.idToken,
       );
       await _firebaseAuth.signInWithCredential(credential);
-
-      print(_firebaseAuth.currentUser.email);
     } on Exception {
       throw SignInWithGoogleFailure();
     }
+  }
+
+  Future<String> getIdToken() async {
+    return await _firebaseAuth.currentUser.getIdToken();
   }
 
   Future<void> signOut() async {

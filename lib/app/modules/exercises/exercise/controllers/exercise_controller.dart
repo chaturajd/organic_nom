@@ -1,3 +1,6 @@
+import 'package:chewie/chewie.dart';
+import 'package:video_player/video_player.dart';
+
 import 'package:data_service/data_service.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:get/get.dart';
@@ -13,16 +16,49 @@ class ExerciseController extends GetxController {
 
   RxBool isAnswered = false.obs;
   bool correctlyAnswered = false;
+  RxBool hasVideoCompleted = true.obs;
 
   RxBool hasPlayerInitialized = false.obs;
   RxString errormsg = "NO ERROR YET".obs;
 
   VlcPlayerController vlcPlayerController;
 
+  ChewieController chewieController;
+  VideoPlayerController _videoPlayerController;
+  RxBool playerInitialized = false.obs;
+
   ExerciseController(this.exercise) {
     vlcPlayerController = VlcPlayerController(onInit: () {
       vlcPlayerController.play();
     });
+
+    initializePlayer();
+  }
+
+  Future<void> initializePlayer() async {
+    _videoPlayerController = VideoPlayerController.network(
+      this.exercise.videoUrl,
+    );
+    try {
+      await _videoPlayerController.initialize();
+    } catch (e) {
+      print(e);
+    }
+
+    chewieController = ChewieController(
+      videoPlayerController: _videoPlayerController,
+      autoInitialize: true,
+      allowFullScreen: true,
+    );
+    chewieController.addListener(() {
+      if (_videoPlayerController.value.position ==
+          _videoPlayerController.value.duration) {
+        hasVideoCompleted.value = true;
+      }
+      print("Video completeed");
+    });
+    playerInitialized.value = true;
+    print("player initialized");
   }
 
   void checkAnswer() {
